@@ -10,6 +10,8 @@ public class RoutingPerformance {
 	private static boolean isCircuit;
 	private static int routingScheme;
 	private static Topology topology;
+	private static Workload workload;
+	private static int packetRate;
 	
 	public static void main(String[] args) {
 		if (args.length == 5) {
@@ -43,6 +45,7 @@ public class RoutingPerformance {
 				System.exit(1);
 			}
 			
+			// Handle the topology.txt argument
 			if (args[2].endsWith(".txt")) {
 				try{
 		            File topoFile = new File(args[2]);
@@ -63,10 +66,33 @@ public class RoutingPerformance {
 				System.exit(1);
 			}
 			
-			if (args[3].matches(".txt$")) {
-				
+			// Handle the workload.txt argument
+			if (args[3].endsWith(".txt")) {
+				try{
+		            File workloadFile = new File(args[3]);
+		            Scanner reader = new Scanner(workloadFile);
+		            workload = new Workload();
+		            while (reader.hasNext()) {
+		            	workload.getEstablishTimes().add(reader.nextDouble());
+		            	workload.getOrigins().add(reader.next());
+		            	workload.getDestinations().add(reader.next());
+		            	workload.getTtlList().add(reader.nextDouble());
+		            }
+		            reader.close();
+	            } catch (Exception e){
+	            	System.err.println("Error: " + e.getMessage());
+	            }
 			} else {
 				System.err.println("Expecting a .txt file as fourth argument (WORKLOAD_FILE).");
+				System.exit(1);
+			}
+			
+			// Handle the packetRate argument.
+			int tempPacketRate = Integer.parseInt(args[4]);
+			if (tempPacketRate > 0) {
+				packetRate = tempPacketRate;
+			} else {
+				System.err.println("Expecting a positive integer as fifth argument (PACKET_RATE).");
 				System.exit(1);
 			}
 		} else {

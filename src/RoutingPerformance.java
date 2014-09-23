@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -42,19 +43,18 @@ public class RoutingPerformance {
 				System.exit(1);
 			}
 			
-			if (args[2].matches(".txt$")) {
+			if (args[2].endsWith(".txt")) {
 				try{
-		            FileInputStream fstream = new FileInputStream(args[2]);
-		            Scanner reader = new Scanner(fstream);
+		            File topoFile = new File(args[2]);
+		            Scanner reader = new Scanner(topoFile);
 		            topology = new Topology();
 		            while (reader.hasNext()) {
-		            	topology.getOrigins().add(reader.next("^[a-zA-Z]$"));
-		            	topology.getDestinations().add(reader.next("^[a-zA-Z]$"));
+		            	topology.getOrigins().add(reader.next());
+		            	topology.getDestinations().add(reader.next());
 		            	topology.getPropDelays().add(reader.nextInt());
-		            	topology.getNumSimulcircuitsList().add(reader.nextInt());
+		            	topology.getNumSimulCircuitsList().add(reader.nextInt());
 		            }
-		            
-		            fstream.close();
+		            reader.close();
 	            } catch (Exception e){
 	            	System.err.println("Error: " + e.getMessage());
 	            }
@@ -65,6 +65,9 @@ public class RoutingPerformance {
 			
 			if (args[3].matches(".txt$")) {
 				
+			} else {
+				System.err.println("Expecting a .txt file as fourth argument (WORKLOAD_FILE).");
+				System.exit(1);
 			}
 		} else {
 			System.err.println("Only accepting exactly 5 arguments - "

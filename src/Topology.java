@@ -26,7 +26,7 @@ public class Topology {
 		return propDelays;
 	}
 	
-	public ArrayList<Integer> getNumSimulcircuitsList() {
+	public ArrayList<Integer> getNumSimulCircuitsList() {
 		return numSimulCircuitsList;
 	}
 }

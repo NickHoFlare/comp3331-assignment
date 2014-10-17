@@ -29,4 +29,8 @@ public class Topology {
 	public ArrayList<Integer> getNumSimulCircuits() {
 		return numSimulCircuits;
 	}
+	
+	public int getSize() {
+		return origins.size();
+	}
 }

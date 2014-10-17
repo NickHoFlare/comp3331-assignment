@@ -12,9 +12,26 @@ public class RoutingPerformance {
 	private static Topology topology;
 	private static Workload workload;
 	private static int packetRate;
+	private static UndirectedGraph graph;
 	
 	public static void main(String[] args) {
 		handleArguments(args);
+		initGraph();
+	}
+	
+	public static void initGraph() {
+		// Initialise Edges
+		graph = new UndirectedGraph();
+		for (int i = 0 ; i < topology.getSize() ; i++) {
+			String[] nodes = {topology.getOrigins().get(i), 
+					topology.getDestinations().get(i)};
+			Edge edge = new Edge(nodes, 
+					topology.getPropDelays().get(i), 
+					topology.getNumSimulCircuits().get(i));
+			graph.addEdge(edge);
+		}
+		
+		// Initialise Nodes
 	}
 	
 	public static void handleArguments(String[] args) {

@@ -25,13 +25,14 @@ public class SHP {
 		//Run the algorithm
 		while (!NodeQueue.isEmpty()){
 			Node from = NodeQueue.poll();
-			for (Edge e: graph.getAdjacencies(source)){
+			for (Edge e: graph.getAdjacencies(from)){
 				Node to = e.getTo();
 				int totalDistance = from.getMinDist() + 1; //SHP is dijkstras with weight 1 for each edge.
 				if(totalDistance < to.getMinDist()){
 					NodeQueue.remove(to);
 					to.setMinDist(totalDistance);
 					to.setPrev(from);
+					NodeQueue.add(to);
 				}
 			}
 		}
@@ -44,10 +45,11 @@ public class SHP {
         Collections.reverse(path);
         
         //Print out the path
-        String output = source.getName();
+        String output = "";
         for(Node n:path){
         	output = output + ", " + n.getName();
         }
+        output = output.substring(2);
         System.out.println(output);
         
         return path;

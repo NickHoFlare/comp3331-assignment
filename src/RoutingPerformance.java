@@ -16,17 +16,19 @@ public class RoutingPerformance {
 	
 	public static void main(String[] args) {
 		handleArguments(args);
-		initGraph();
+		
 		runCommand();
 	}
 	
 	private static void runCommand(){
 		if(isCircuit){
 			if(routingScheme == 0){ //SHP
-				SHP shp = new SHP(graph);
 				//TODO:Insert code to determine the start and end location.
 				//i.e parsing the workload file.
 				for(int i = 0; i < workload.getSize() ; i++){
+					//Run initGraph every time otherwise results from previous algo messes up.
+					initGraph();
+					SHP shp = new SHP(graph);
 					System.out.println("Path from "+workload.getOrigins().get(i)+"to "+(workload.getDestinations().get(i))+" is:");
 					Node from = graph.getNode(workload.getOrigins().get(i));
 					Node to = graph.getNode(workload.getDestinations().get(i));

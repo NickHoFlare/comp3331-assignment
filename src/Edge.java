@@ -20,6 +20,10 @@ public class Edge {
 		return numSimulCircuits;
 	}
 	
+	public Node getFrom(){
+		return from;
+	}
+	
 	public Node getTo(){
 		return to;
 	}

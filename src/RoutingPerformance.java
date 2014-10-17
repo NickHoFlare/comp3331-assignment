@@ -27,10 +27,9 @@ public class RoutingPerformance {
 				//TODO:Insert code to determine the start and end location.
 				//i.e parsing the workload file.
 				for(int i = 0; i < workload.getSize() ; i++){
-					System.out.println((i)+workload.getOrigins().get(i)+(workload.getDestinations().get(i)));
+					System.out.println("Path from "+workload.getOrigins().get(i)+"to "+(workload.getDestinations().get(i))+" is:");
 					Node from = graph.getNode(workload.getOrigins().get(i));
 					Node to = graph.getNode(workload.getDestinations().get(i));
-					//System.out.println(from.getName());
 					shp.shortestPath(from,to);
 				}
 			}
@@ -49,11 +48,14 @@ public class RoutingPerformance {
 			Edge edge2 = new Edge(to,from, 
 					topology.getPropDelays().get(i), 
 					topology.getNumSimulCircuits().get(i));
-			//Undirected graph has edge going both ways.
-			graph.addEdge(edge1);
-			graph.addEdge(edge2);
+			
+			//Doesnt matter if nodes are overwritten.
 			graph.addNode(from);
 			graph.addNode(to);
+			
+			//Undirected graph has edge going both ways.
+			graph.addAdjacency(edge1);
+			graph.addAdjacency(edge2);
 		}
 		
 		// Initialise Nodes

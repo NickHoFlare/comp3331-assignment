@@ -25,7 +25,7 @@ public class SHP {
 		//Run the algorithm
 		while (!NodeQueue.isEmpty()){
 			Node from = NodeQueue.poll();
-			for (Edge e:from.getEdges()){
+			for (Edge e: graph.getAdjacencies(source)){
 				Node to = e.getTo();
 				int totalDistance = from.getMinDist() + 1; //SHP is dijkstras with weight 1 for each edge.
 				if(totalDistance < to.getMinDist()){

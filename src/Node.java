@@ -9,20 +9,24 @@ public class Node implements Comparable<Node>{
 	//Biggest int in java is that anyway.
 	private Node prev;
 	
-	private ArrayList<Edge> edges;
+	//private ArrayList<Edge> edges;
 	
 	public Node(String name) {
 		this.name = name;
-		edges = new ArrayList<Edge>();
+		//edges = new ArrayList<Edge>();
 	}
 	
 	public String getName() {
 		return name;
 	}
 	
-	public ArrayList<Edge> getEdges() {
+	/*public void addEdge(Edge e){
+		edges.add(e);
+	}*/
+	
+	/*public ArrayList<Edge> getEdges() {
 		return edges;
-	}
+	}*/
 	
 	public Node getPrev(){
 		return prev;

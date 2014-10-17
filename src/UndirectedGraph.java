@@ -4,12 +4,12 @@ import java.util.ArrayList;
 public class UndirectedGraph implements Graph {
 	private ArrayList<Node> nodes;
 	private ArrayList<Edge> edges;
-	private ArrayList<ArrayList<Node>> adjacencyList;
+	private ArrayList<Edge> adjacencyList;
 	
 	public UndirectedGraph() {
 		nodes = new ArrayList<Node>();
 		edges = new ArrayList<Edge>();
-		adjacencyList = new ArrayList<ArrayList<Node>>();
+		adjacencyList = new ArrayList<Edge>();
 	}
 	
 	@Override
@@ -26,26 +26,30 @@ public class UndirectedGraph implements Graph {
 	}
 
 	@Override
-	public void addAdjacency(ArrayList<Node> adjacency) {
-		// TODO Auto-generated method stub
+	public void addAdjacency(Edge adjacency) {
+		adjacencyList.add(adjacency);
 	}
 
 	@Override
-	public ArrayList<ArrayList<Node>> getAdjacencies() {
-		// TODO Auto-generated method stub
-		return null;
+	public ArrayList<Edge> getAdjacencies(Node a) {
+		
+		ArrayList <Edge> connectingEdges = new ArrayList<Edge>();
+		for(Edge e:adjacencyList){
+			if(e.getFrom().getName().equals(a.getName())){
+				connectingEdges.add(e);
+			}
+		}
+		return connectingEdges;
 	}
 
-	@Override
-	public void addEdge(Edge edge) {
+	/*public void addEdge(Edge edge) {
 		edges.add(edge);
-	}
+	}*/
 
-	@Override
-	public ArrayList<Edge> getEdges() {
+	/*public ArrayList<Edge> getEdges() {
 		// TODO Auto-generated method stub
 		return null;
-	}
+	}*/
 	
 	public Node getNode(String node){
 		for(Node n: nodes){

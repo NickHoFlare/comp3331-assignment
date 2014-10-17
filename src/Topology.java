@@ -5,13 +5,13 @@ public class Topology {
 	private ArrayList<String> origins;
 	private ArrayList<String> destinations;
 	private ArrayList<Integer> propDelays;
-	private ArrayList<Integer> numSimulCircuitsList;
+	private ArrayList<Integer> numSimulCircuits;
 	
 	public Topology() {
 		origins = new ArrayList<String>();
 		destinations = new ArrayList<String>();
 		propDelays = new ArrayList<Integer>();
-		numSimulCircuitsList = new ArrayList<Integer>();
+		numSimulCircuits = new ArrayList<Integer>();
 	}
 	
 	public ArrayList<String> getOrigins() {
@@ -26,7 +26,7 @@ public class Topology {
 		return propDelays;
 	}
 	
-	public ArrayList<Integer> getNumSimulCircuitsList() {
-		return numSimulCircuitsList;
+	public ArrayList<Integer> getNumSimulCircuits() {
+		return numSimulCircuits;
 	}
 }

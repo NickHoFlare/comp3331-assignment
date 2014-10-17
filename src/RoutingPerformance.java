@@ -14,6 +14,10 @@ public class RoutingPerformance {
 	private static int packetRate;
 	
 	public static void main(String[] args) {
+		handleArguments(args);
+	}
+	
+	public static void handleArguments(String[] args) {
 		if (args.length == 5) {
 			// If the boolean isCircuit is true, CIRCUIT was chosen as network scheme.
 			// If the boolean isCircuit is false, PACKET was chosen as network scheme.
@@ -55,9 +59,10 @@ public class RoutingPerformance {
 		            	topology.getOrigins().add(reader.next());
 		            	topology.getDestinations().add(reader.next());
 		            	topology.getPropDelays().add(reader.nextInt());
-		            	topology.getNumSimulCircuitsList().add(reader.nextInt());
+		            	topology.getNumSimulCircuits().add(reader.nextInt());
 		            }
 		            reader.close();
+		            System.out.println("Topology file: "+args[2]);
 	            } catch (Exception e){
 	            	System.err.println("Error: " + e.getMessage());
 	            }
@@ -79,6 +84,7 @@ public class RoutingPerformance {
 		            	workload.getTtlList().add(reader.nextDouble());
 		            }
 		            reader.close();
+		            System.out.println("Workload file: "+args[3]);
 	            } catch (Exception e){
 	            	System.err.println("Error: " + e.getMessage());
 	            }
@@ -91,6 +97,7 @@ public class RoutingPerformance {
 			int tempPacketRate = Integer.parseInt(args[4]);
 			if (tempPacketRate > 0) {
 				packetRate = tempPacketRate;
+				System.out.println("Packet Rate: "+packetRate);
 			} else {
 				System.err.println("Expecting a positive integer as fifth argument (PACKET_RATE).");
 				System.exit(1);

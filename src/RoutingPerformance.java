@@ -23,8 +23,6 @@ public class RoutingPerformance {
 	private static void runCommand(){
 		if(isCircuit){
 			if(routingScheme == 0){ //SHP
-				//TODO:Insert code to determine the start and end location.
-				//i.e parsing the workload file.
 				for(int i = 0; i < workload.getSize() ; i++){
 					//Run initGraph every time otherwise results from previous algo messes up.
 					initGraph();

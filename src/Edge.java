@@ -1,18 +1,16 @@
 
 public class Edge {
-	private String[] nodes;
+	private Node from;
+	private Node to;
 	private int propagationDelay;
 	private int numSimulCircuits;
 	
-	public Edge(String[] nodes, int propDelay, int numSimulCircuits) {
-		nodes = new String[2];
+	public Edge(Node from,Node to, int propDelay, int numSimulCircuits) {
+		this.from = from;
+		this.to = to;
 		propagationDelay = propDelay;
 		this.numSimulCircuits = numSimulCircuits;
 	}	
-	
-	public String[] getNodes() {
-		return nodes;
-	}
 	
 	public int getPropagationDelay() {
 		return propagationDelay;
@@ -20,5 +18,9 @@ public class Edge {
 	
 	public int getNumSimulCircuits() {
 		return numSimulCircuits;
+	}
+	
+	public Node getTo(){
+		return to;
 	}
 }

@@ -17,18 +17,43 @@ public class RoutingPerformance {
 	public static void main(String[] args) {
 		handleArguments(args);
 		initGraph();
+		runCommand();
+	}
+	
+	private static void runCommand(){
+		if(isCircuit){
+			if(routingScheme == 0){ //SHP
+				SHP shp = new SHP(graph);
+				//TODO:Insert code to determine the start and end location.
+				//i.e parsing the workload file.
+				for(int i = 0; i < workload.getSize() ; i++){
+					System.out.println((i)+workload.getOrigins().get(i)+(workload.getDestinations().get(i)));
+					Node from = graph.getNode(workload.getOrigins().get(i));
+					Node to = graph.getNode(workload.getDestinations().get(i));
+					//System.out.println(from.getName());
+					shp.shortestPath(from,to);
+				}
+			}
+		}
 	}
 	
 	public static void initGraph() {
 		// Initialise Edges
 		graph = new UndirectedGraph();
 		for (int i = 0 ; i < topology.getSize() ; i++) {
-			String[] nodes = {topology.getOrigins().get(i), 
-					topology.getDestinations().get(i)};
-			Edge edge = new Edge(nodes, 
+			Node from = new Node(topology.getOrigins().get(i));
+			Node to = new Node(topology.getDestinations().get(i));
+			Edge edge1 = new Edge(from,to, 
 					topology.getPropDelays().get(i), 
 					topology.getNumSimulCircuits().get(i));
-			graph.addEdge(edge);
+			Edge edge2 = new Edge(to,from, 
+					topology.getPropDelays().get(i), 
+					topology.getNumSimulCircuits().get(i));
+			//Undirected graph has edge going both ways.
+			graph.addEdge(edge1);
+			graph.addEdge(edge2);
+			graph.addNode(from);
+			graph.addNode(to);
 		}
 		
 		// Initialise Nodes

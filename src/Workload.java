@@ -28,4 +28,8 @@ public class Workload {
 	public ArrayList<Double> getTtlList() {
 		return ttlList;
 	}
+	
+	public int getSize(){
+		return origins.size();
+	}
 }

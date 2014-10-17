@@ -14,7 +14,9 @@ public class UndirectedGraph implements Graph {
 	
 	@Override
 	public void addNode(Node node) {
-		// TODO Auto-generated method stub
+		if(!nodes.contains(node)){
+			nodes.add(node);
+		}
 	}
 
 	@Override
@@ -36,12 +38,21 @@ public class UndirectedGraph implements Graph {
 
 	@Override
 	public void addEdge(Edge edge) {
-		// TODO Auto-generated method stub
+		edges.add(edge);
 	}
 
 	@Override
 	public ArrayList<Edge> getEdges() {
 		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public Node getNode(String node){
+		for(Node n: nodes){
+			if(n.getName().equals(node)){
+				return n;
+			}
+		}
 		return null;
 	}
 

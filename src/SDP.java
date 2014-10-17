@@ -3,10 +3,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.PriorityQueue;
 
-public class SHP {
+public class SDP {
 
 	private Graph graph;
-	public SHP(Graph graph){
+	public SDP(Graph graph){
 		this.graph = graph;
 	}
 	
@@ -27,7 +27,7 @@ public class SHP {
 			Node from = NodeQueue.poll();
 			for (Edge e: graph.getAdjacencies(from)){
 				Node to = e.getTo();
-				int totalDistance = from.getMinDist() + e.getPropagationDelay(); //SHP is dijkstras with weight 1 for each edge.
+				int totalDistance = from.getMinDist() + 1; //SDP is dijkstras with weight 'propagation delay' for each edge.
 				if(totalDistance < to.getMinDist()){
 					NodeQueue.remove(to);
 					to.setMinDist(totalDistance);

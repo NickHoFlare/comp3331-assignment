@@ -34,6 +34,16 @@ public class RoutingPerformance {
 					Node to = graph.getNode(workload.getDestinations().get(i));
 					shp.shortestPath(from,to);
 				}
+			}else if(routingScheme == 1){
+				for(int i = 0; i < workload.getSize() ; i++){
+					//Run initGraph every time otherwise results from previous algo messes up.
+					initGraph();
+					SDP sdp = new SDP(graph);
+					System.out.println("Path from "+workload.getOrigins().get(i)+"to "+(workload.getDestinations().get(i))+" is:");
+					Node from = graph.getNode(workload.getOrigins().get(i));
+					Node to = graph.getNode(workload.getDestinations().get(i));
+					sdp.shortestPath(from,to);
+				}
 			}
 		}
 	}

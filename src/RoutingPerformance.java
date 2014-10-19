@@ -69,12 +69,15 @@ public class RoutingPerformance {
 					System.out.println("Path from "+workload.getOrigins().get(i)+" to "+(workload.getDestinations().get(i))+" is:");
 					Node from = graph.getNode(workload.getOrigins().get(i));
 					Node to = graph.getNode(workload.getDestinations().get(i));
+					ArrayList<Node> shortestPath = shp.shortestPath(from,to);
 					VirtualCircuit circuit = new VirtualCircuit(
-							shp.shortestPath(from,to), 
+							shortestPath, 
 							workload.getEstablishTimes().get(i),
 							workload.getOrigins().get(i),
 							workload.getDestinations().get(i),
 							workload.getTtlList().get(i));
+					ArrayList<Edge> shortestPathEdges = getShortestPathEdges(shortestPath);
+					
 				}
 			// Using SDP
 			} else if(routingScheme == 1) {
@@ -95,6 +98,24 @@ public class RoutingPerformance {
 				}
 			}
 		}
+	}
+	
+	// TODO RENAME ALL INSTANCES OF ADJACENCYLIST TO EDGES.
+	public static ArrayList<Edge> getShortestPathEdges(ArrayList<Node> shortestPath) {
+		ArrayList<Edge> shortestPathEdges = new ArrayList<Edge>();
+		Node current;
+		Node next;
+		
+		for (int i = 0 ; i < shortestPath.size()-1 ; i++) {
+			current = shortestPath.get(i);
+			next = shortestPath.get(i+1);
+			
+			for (Edge e : graph.getAdjacencies(a)) {
+				if (e.from)
+			}
+		}
+		
+		return shortestPathEdges;
 	}
 	
 	public static void initGraph() {

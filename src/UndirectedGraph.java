@@ -38,15 +38,18 @@ public class UndirectedGraph implements Graph {
 		}
 		return connectingEdges;
 	}
+	
+	public ArrayList<Edge> getAdjacencyList() {
+		return adjacencyList;
+	}
 
-	/*public void addEdge(Edge edge) {
+	public void addEdge(Edge edge) {
 		edges.add(edge);
-	}*/
+	}
 
-	/*public ArrayList<Edge> getEdges() {
-		// TODO Auto-generated method stub
-		return null;
-	}*/
+	public ArrayList<Edge> getEdges() {
+		return edges;
+	}
 	
 	public Node getNode(String node){
 		for(Node n: nodes){

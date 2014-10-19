@@ -17,15 +17,25 @@ public class RoutingPerformance {
 	public static void main(String[] args) {
 		handleArguments(args);
 		
+		
+		
+		
 		runCommand();
 	}
 	
 	private static void runCommand(){
+		
 		if(isCircuit){
 			if(routingScheme == 0){ //SHP
 				for(int i = 0; i < workload.getSize() ; i++){
 					//Run initGraph every time otherwise results from previous algo messes up.
 					initGraph();
+					
+					//Print out all of the nodes in the graph.
+					/*for(Node n:graph.getNodes()){
+						System.out.println(n.getName());
+					}*/	
+					
 					SHP shp = new SHP(graph);
 					System.out.println("Path from "+workload.getOrigins().get(i)+"to "+(workload.getDestinations().get(i))+" is:");
 					Node from = graph.getNode(workload.getOrigins().get(i));
@@ -59,9 +69,25 @@ public class RoutingPerformance {
 					topology.getPropDelays().get(i), 
 					topology.getNumSimulCircuits().get(i));
 			
-			//Doesnt matter if nodes are overwritten.
-			graph.addNode(from);
-			graph.addNode(to);
+			//Check whether or not the nodes are already in the graph.
+			boolean fromExists = false;
+			boolean toExists = false;
+			for(Node n:graph.getNodes()){
+				if(n.getName().equals(from.getName())){
+					fromExists = true;
+				}
+				if(n.getName().equals(to.getName())){
+					toExists = true;
+				}
+			}	
+			
+			//Add the nodes if they don't exist.
+			if(!fromExists){
+				graph.addNode(from);
+			}
+			if(!toExists){
+				graph.addNode(to);		
+			}
 			
 			//Undirected graph has edge going both ways.
 			graph.addAdjacency(edge1);

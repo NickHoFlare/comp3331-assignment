@@ -14,15 +14,12 @@ public class UndirectedGraph implements Graph {
 	
 	@Override
 	public void addNode(Node node) {
-		if(!nodes.contains(node)){
-			nodes.add(node);
-		}
+		nodes.add(node);
 	}
 
 	@Override
 	public ArrayList<Node> getNodes() {
-		// TODO Auto-generated method stub
-		return null;
+		return nodes;
 	}
 
 	@Override

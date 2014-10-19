@@ -27,7 +27,7 @@ public class SDP {
 			Node from = NodeQueue.poll();
 			for (Edge e: graph.getAdjacencies(from)){
 				Node to = e.getTo();
-				int totalDistance = from.getMinDist() + 1; //SDP is dijkstras with weight 'propagation delay' for each edge.
+				int totalDistance = from.getMinDist() + e.getPropagationDelay(); //SDP is dijkstras with weight 'propagation delay' for each edge.
 				if(totalDistance < to.getMinDist()){
 					NodeQueue.remove(to);
 					to.setMinDist(totalDistance);

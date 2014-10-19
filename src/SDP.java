@@ -26,7 +26,9 @@ public class SDP {
 		while (!NodeQueue.isEmpty()){
 			Node from = NodeQueue.poll();
 			for (Edge e: graph.getAdjacencies(from)){
-				Node to = e.getTo();
+				Node toNode = e.getTo();
+				//toNode is the node stored inside the ajacency list. to is the node stored inside the graph.
+				Node to = graph.getNode(toNode.getName());
 				int totalDistance = from.getMinDist() + e.getPropagationDelay(); //SDP is dijkstras with weight 'propagation delay' for each edge.
 				if(totalDistance < to.getMinDist()){
 					NodeQueue.remove(to);

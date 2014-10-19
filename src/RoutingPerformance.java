@@ -21,7 +21,7 @@ public class RoutingPerformance {
 	}
 	
 	/**
-	 * THINGS TO CONSIDER:
+	 * THINGS TO CONSIDER: (The following should hold true for both CIRCUIT and PACKET)
 	 * 
 	 * The number of virtual circuits established is only relevant to the edges that are affected.
 	 * For example, for each line of workflow.txt, A VirtualCircuit(VC) object will be constructed and 
@@ -29,6 +29,15 @@ public class RoutingPerformance {
 	 * of VCs in each edge will increment by 1. If the number of circuits exceeds the numSimulCircuits 
 	 * field in any edge, any further circuits will be "blocked", and the packets lost. If the ttl of any 
 	 * circuit is reached, said circuit will expire, and will be removed from all lists that contain it. 
+	 * 
+	 * W.r.t. PACKET: 
+	 * 
+	 * Done the same way as CIRCUIT. However, we calculate the number of packets that are to be sent using
+	 * ttl / packetRate. The number of VCs we create for each Edge = above calculated numPackets. Assume
+	 * completely free Edge (all resources available), numPackets = 20 and numSimulCircuits = 15, we can
+	 * send the first 15 packets but the last 5 packets will be lost.
+	 * 
+	 * PLEASE READ THE SPEC AS WELL AND CONFIRM IF THE ABOVE IS TRUE!!!!!!!!!!!!!!!!!!
 	 * 
 	 * STRATEGY:
 	 * -> Give each Edge object a list of VirtualCircuits.

@@ -56,7 +56,12 @@ public class Edge {
 		double newEstablishTime = newCircuit.getEstablishTime();
 		
 		for (VirtualCircuit vc : circuits) {
+			double expireTime = vc.getEstablishTime() + vc.getTTL();
 			
+			// If the VC has already expired at the time of adding the new circuit, remove the old one.
+			if (expireTime < newEstablishTime) {
+				circuits.remove(vc);
+			}
 		}
 	}
 }

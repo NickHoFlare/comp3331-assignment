@@ -50,6 +50,11 @@ public class RoutingPerformance {
 	 * 			-> If No, check if list.size() < numSimulCircuits.
 	 * 				-> If Yes, add the new VC.
 	 * 				-> If No, consider circuit blocked. (Count packets affected)
+	 * 
+	 * 1) Need to add VC.
+	 * 2) call edge.cleanup(newVC) to remove all expired VCs
+	 * 3) if edge.hasCapacity(), addCircuit(newVC)
+	 * 4) if !edge.hasCapacity(), increment blockedPackets counter, do not addCircuit.
 	 */
 	private static void runCommand() {
 		// Using CIRCUIT mode

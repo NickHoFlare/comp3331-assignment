@@ -77,7 +77,7 @@ public class RoutingPerformance {
 							workload.getDestinations().get(i),
 							workload.getTtlList().get(i));
 					ArrayList<Edge> shortestPathEdges = getShortestPathEdges(shortestPath);
-					
+					//TODO: Iterate through list of edges in shortest path, call cleanup, add circuits
 				}
 			// Using SDP
 			} else if(routingScheme == 1) {
@@ -89,12 +89,14 @@ public class RoutingPerformance {
 					System.out.println("Path from "+workload.getOrigins().get(i)+"to "+(workload.getDestinations().get(i))+" is:");
 					Node from = graph.getNode(workload.getOrigins().get(i));
 					Node to = graph.getNode(workload.getDestinations().get(i));
+					ArrayList<Node> shortestPath = sdp.shortestPath(from,to);
 					VirtualCircuit circuit = new VirtualCircuit(
 							sdp.shortestPath(from,to), 
 							workload.getEstablishTimes().get(i),
 							workload.getOrigins().get(i),
 							workload.getDestinations().get(i),
 							workload.getTtlList().get(i));
+					ArrayList<Edge> shortestPathEdges = getShortestPathEdges(shortestPath);
 				}
 			}
 		}
@@ -106,15 +108,17 @@ public class RoutingPerformance {
 		Node current;
 		Node next;
 		
-		for (int i = 0 ; i < shortestPath.size()-1 ; i++) {
+		for (int i = 0 ; i < (shortestPath.size()-1) ; i++) {
 			current = shortestPath.get(i);
 			next = shortestPath.get(i+1);
-			
-			for (Edge e : graph.getAdjacencies(a)) {
-				if (e.from)
+			for (Edge e : graph.getAdjacencyList()) {
+				if (e.getFrom().getName().equalsIgnoreCase(current.getName()) && 
+						e.getTo().getName().equalsIgnoreCase(next.getName())) {
+					shortestPathEdges.add(e);
+				}
 			}
 		}
-		
+		System.out.println("size of shortestPathEdges: "+shortestPathEdges.size());
 		return shortestPathEdges;
 	}
 	

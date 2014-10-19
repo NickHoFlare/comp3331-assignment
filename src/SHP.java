@@ -30,9 +30,10 @@ public class SHP {
 			for (Edge e: graph.getAdjacencies(from)){
 				//System.out.println("Path from "+e.getFrom().getName() + " to " + e.getTo().getName());
 				Node toNode = e.getTo();
-				//toNode is the node stored inside the ajacency list. to is the node stored inside the graph.
+				//toNode is the node stored inside the adjacency list. to is the node stored inside the graph.
 				Node to = graph.getNode(toNode.getName());
-				int totalDistance = from.getMinDist() + 1; //SHP is dijkstras with weight 1 for each edge.
+				// SHP is dijkstras with weight 1 for each edge.
+				int totalDistance = from.getMinDist() + 1; 
 				if(totalDistance < to.getMinDist()){
 					NodeQueue.remove(to);
 					to.setMinDist(totalDistance);
@@ -41,8 +42,6 @@ public class SHP {
 				}
 			}
 		}
-		
-		
 		
 		//Find the shortest path using the successive prev values from the destination.
 		ArrayList<Node> path = new ArrayList<Node>();

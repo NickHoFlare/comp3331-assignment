@@ -15,26 +15,24 @@ public class RoutingPerformance {
 	private static UndirectedGraph graph;
 	
 	public static void main(String[] args) {
-		handleArguments(args);
-		
-		
-		
-		
+		handleArguments(args);		
 		runCommand();
 	}
 	
 	private static void runCommand(){
-		
 		if(isCircuit){
-			if(routingScheme == 0){ //SHP
+			//SHP
+			if(routingScheme == 0){ 
 				for(int i = 0; i < workload.getSize() ; i++){
 					//Run initGraph every time otherwise results from previous algo messes up.
 					initGraph();
 					
 					//Print out all of the nodes in the graph.
-					/*for(Node n:graph.getNodes()){
+					/*
+					for(Node n:graph.getNodes()){
 						System.out.println(n.getName());
-					}*/	
+					}
+					*/	
 					
 					SHP shp = new SHP(graph);
 					System.out.println("Path from "+workload.getOrigins().get(i)+"to "+(workload.getDestinations().get(i))+" is:");
@@ -72,6 +70,7 @@ public class RoutingPerformance {
 			//Check whether or not the nodes are already in the graph.
 			boolean fromExists = false;
 			boolean toExists = false;
+			
 			for(Node n:graph.getNodes()){
 				if(n.getName().equals(from.getName())){
 					fromExists = true;
@@ -93,8 +92,6 @@ public class RoutingPerformance {
 			graph.addAdjacency(edge1);
 			graph.addAdjacency(edge2);
 		}
-		
-		// Initialise Nodes
 	}
 	
 	public static void handleArguments(String[] args) {

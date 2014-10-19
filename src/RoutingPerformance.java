@@ -14,41 +14,70 @@ public class RoutingPerformance {
 	private static int packetRate;
 	private static UndirectedGraph graph;
 	
+	
 	public static void main(String[] args) {
 		handleArguments(args);		
 		runCommand();
 	}
 	
-	private static void runCommand(){
-		if(isCircuit){
-			//SHP
+	/**
+	 * THINGS TO CONSIDER:
+	 * 
+	 * The number of virtual circuits established is only relevant to the edges that are affected.
+	 * For example, for each line of workflow.txt, A VirtualCircuit(VC) object will be constructed and 
+	 * added to each edge affected by the shortest path specified in said VC. Thus, the size of the list 
+	 * of VCs in each edge will increment by 1. If the number of circuits exceeds the numSimulCircuits 
+	 * field in any edge, any further circuits will be "blocked", and the packets lost. If the ttl of any 
+	 * circuit is reached, said circuit will expire, and will be removed from all lists that contain it. 
+	 * 
+	 * STRATEGY:
+	 * -> Give each Edge object a list of VirtualCircuits.
+	 * 		-> Iterate through each node in the shortestPath field. Add the VirtualCircuit to each relevant
+	 * 			edge.
+	 * -> Each time we attempt to add a VirtualCircuit to an Edge,
+	 * 		-> Check the list in that Edge, to see if any VCs have expired at the time of adding the new
+	 * 			VC.
+	 * 			-> If Yes, remove that VC. 
+	 * 			-> If No, check if list.size() < numSimulCircuits.
+	 * 				-> If Yes, add the new VC.
+	 * 				-> If No, consider circuit blocked. (Count packets affected)
+	 */
+	private static void runCommand() {
+		// Using CIRCUIT mode
+		if(isCircuit) {
+			// Using SHP
 			if(routingScheme == 0){ 
-				for(int i = 0; i < workload.getSize() ; i++){
+				for(int i = 0; i < workload.getSize() ; i++) {
 					//Run initGraph every time otherwise results from previous algo messes up.
 					initGraph();
-					
-					//Print out all of the nodes in the graph.
-					/*
-					for(Node n:graph.getNodes()){
-						System.out.println(n.getName());
-					}
-					*/	
 					
 					SHP shp = new SHP(graph);
-					System.out.println("Path from "+workload.getOrigins().get(i)+"to "+(workload.getDestinations().get(i))+" is:");
+					System.out.println("Path from "+workload.getOrigins().get(i)+" to "+(workload.getDestinations().get(i))+" is:");
 					Node from = graph.getNode(workload.getOrigins().get(i));
 					Node to = graph.getNode(workload.getDestinations().get(i));
-					shp.shortestPath(from,to);
+					VirtualCircuit circuit = new VirtualCircuit(
+							shp.shortestPath(from,to), 
+							workload.getEstablishTimes().get(i),
+							workload.getOrigins().get(i),
+							workload.getDestinations().get(i),
+							workload.getTtlList().get(i));
 				}
-			}else if(routingScheme == 1){
-				for(int i = 0; i < workload.getSize() ; i++){
+			// Using SDP
+			} else if(routingScheme == 1) {
+				for(int i = 0; i < workload.getSize() ; i++) {
 					//Run initGraph every time otherwise results from previous algo messes up.
 					initGraph();
+					
 					SDP sdp = new SDP(graph);
 					System.out.println("Path from "+workload.getOrigins().get(i)+"to "+(workload.getDestinations().get(i))+" is:");
 					Node from = graph.getNode(workload.getOrigins().get(i));
 					Node to = graph.getNode(workload.getDestinations().get(i));
-					sdp.shortestPath(from,to);
+					VirtualCircuit circuit = new VirtualCircuit(
+							sdp.shortestPath(from,to), 
+							workload.getEstablishTimes().get(i),
+							workload.getOrigins().get(i),
+							workload.getDestinations().get(i),
+							workload.getTtlList().get(i));
 				}
 			}
 		}
@@ -174,7 +203,7 @@ public class RoutingPerformance {
 			int tempPacketRate = Integer.parseInt(args[4]);
 			if (tempPacketRate > 0) {
 				packetRate = tempPacketRate;
-				System.out.println("Packet Rate: "+packetRate);
+				System.out.println("Packet Rate: "+packetRate+"Packets / Second");
 			} else {
 				System.err.println("Expecting a positive integer as fifth argument (PACKET_RATE).");
 				System.exit(1);

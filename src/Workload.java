@@ -4,13 +4,13 @@ public class Workload {
 	private ArrayList<Double> establishTimes;
 	private ArrayList<String> origins;
 	private ArrayList<String> destinations;
-	private ArrayList<Double> ttlList;
+	private ArrayList<Double> activeDurationList;
 	
 	public Workload() {
 		origins = new ArrayList<String>();
 		destinations = new ArrayList<String>();
 		establishTimes = new ArrayList<Double>();
-		ttlList = new ArrayList<Double>();
+		activeDurationList = new ArrayList<Double>();
 	}
 	
 	public ArrayList<String> getOrigins() {
@@ -25,8 +25,8 @@ public class Workload {
 		return establishTimes;
 	}
 	
-	public ArrayList<Double> getTtlList() {
-		return ttlList;
+	public ArrayList<Double> getActiveDurationList() {
+		return activeDurationList;
 	}
 	
 	public int getSize(){

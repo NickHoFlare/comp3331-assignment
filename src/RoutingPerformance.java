@@ -28,6 +28,141 @@ public class RoutingPerformance {
 		runCommand();
 	}
 	
+	private static void runCircuit() {
+		// Using SHP
+		if(routingScheme == 0){ 
+			for(int i = 0; i < workload.getSize() ; i++) {
+				System.out.println("------------------------------");
+				int numPackets = (int) Math.ceil(packetRate * workload.getActiveDurationList().get(i));
+				System.out.println("num packets being sent out: "+numPackets);
+				
+				// Run initGraph every time otherwise results from previous algo messes up.
+				initGraph();
+				
+				// Run Shortest Hop Algorithm
+				SHP shp = new SHP(graph);
+				System.out.println("Path from "+workload.getOrigins().get(i)+" to "+(workload.getDestinations().get(i))+" is:");
+				Node from = graph.getNode(workload.getOrigins().get(i));
+				Node to = graph.getNode(workload.getDestinations().get(i));
+				ArrayList<Node> shortestPath = shp.shortestPath(from,to);
+				
+				// Create virtual circuit using generated shortest path
+				VirtualCircuit circuit = new VirtualCircuit(
+						shortestPath, 
+						workload.getEstablishTimes().get(i),
+						workload.getOrigins().get(i),
+						workload.getDestinations().get(i),
+						workload.getActiveDurationList().get(i));
+				
+				// Find the list of edges between the nodes of the shortest path
+				ArrayList<Edge> shortestPathEdges = getShortestPathEdges(shortestPath);
+				
+				manageCircuits(circuit, shortestPathEdges, numPackets);
+			}
+		// Using SDP
+		} else if(routingScheme == 1) {
+			for(int i = 0; i < workload.getSize() ; i++) {
+				System.out.println("------------------------------");
+				int numPackets = (int) Math.ceil(packetRate * workload.getActiveDurationList().get(i));
+				System.out.println("num packets being sent out: "+numPackets);
+				
+				// Run initGraph every time otherwise results from previous algo messes up.
+				initGraph();
+				
+				// Run Shortest Delay Path Algorithm
+				SDP sdp = new SDP(graph);
+				System.out.println("Path from "+workload.getOrigins().get(i)+"to "+(workload.getDestinations().get(i))+" is:");
+				Node from = graph.getNode(workload.getOrigins().get(i));
+				Node to = graph.getNode(workload.getDestinations().get(i));
+				ArrayList<Node> shortestPath = sdp.shortestPath(from,to);
+				
+				// Create virtual circuit using generated shortest path
+				VirtualCircuit circuit = new VirtualCircuit(
+						sdp.shortestPath(from,to), 
+						workload.getEstablishTimes().get(i),
+						workload.getOrigins().get(i),
+						workload.getDestinations().get(i),
+						workload.getActiveDurationList().get(i));
+				// Find the list of edges between the nodes of the shortest path
+				ArrayList<Edge> shortestPathEdges = getShortestPathEdges(shortestPath);
+				
+				manageCircuits(circuit, shortestPathEdges, numPackets);
+			}
+		// Using LLP
+		} else if(routingScheme == 2) {
+			for(int i = 0; i < workload.getSize() ; i++) {
+				
+			}
+		}
+	}
+	
+	private static void runPacket() {
+		// Using SHP
+		if(routingScheme == 0){ 
+			for(int i = 0 ; i < workload.getSize() ; i++) {
+				int numPackets = (int) Math.ceil(packetRate * workload.getActiveDurationList().get(i));
+				double ttl = 1 / packetRate;
+				double currentStart = workload.getEstablishTimes().get(i);
+				
+				for (int j = 0 ; j < numPackets ; j++) {
+					// Run initGraph every time otherwise results from previous algo messes up.
+					initGraph();
+					
+					// Run Shortest Hop Algorithm
+					SHP shp = new SHP(graph);
+					System.out.println("Path from "+workload.getOrigins().get(i)+" to "+(workload.getDestinations().get(i))+" is:");
+					Node from = graph.getNode(workload.getOrigins().get(i));
+					Node to = graph.getNode(workload.getDestinations().get(i));
+					ArrayList<Node> shortestPath = shp.shortestPath(from,to);
+					
+					
+					
+					
+					currentStart += ttl;
+				}
+			}
+			
+		// Using SDP
+		} else if (routingScheme == 1) {
+		
+			
+		// Using LLP
+		} else if (routingScheme == 2) {
+			
+		}
+	}
+	
+	public static void manageCircuits(VirtualCircuit circuit, ArrayList<Edge> shortestPathEdges, int numPackets) {
+		// For each edge in the list of edges, clean up any expired VCs, and add the new 
+		// circuit if there is capacity. If at any point an edge has insufficient capacity 
+		// to add the new circuit, set the circuit as blocked and leave the loop immediately.
+		for (Edge e : shortestPathEdges) {
+			e.cleanup(circuit);
+			if (e.hasCapacity()) {
+				e.addCircuit(circuit);
+				// If entire circuit has been established, we consider the packets allocated.
+				if (shortestPathEdges.indexOf(e) == shortestPathEdges.size()-1) {
+					routedPackets += numPackets;
+					System.out.println("Total packets Routed: "+routedPackets);
+				}
+			} else {
+				circuit.setBlocked();
+				blockedPackets += numPackets;
+				System.out.println("Total packets Blocked: "+blockedPackets);
+				break;
+			}
+		}
+		
+		// Check if the circuit is blocked. If yes, iterate through edges in shortest path
+		// again, and remove all instances of that circuit from any lists that contain it.
+		if (circuit.blocked()) {
+			for (Edge e : shortestPathEdges) {
+				if (e.getCircuits().contains(circuit))
+					e.getCircuits().remove(circuit);
+			}
+		}
+	}
+	
 	/**
 	 * THINGS TO CONSIDER: (The following should hold true for both CIRCUIT and PACKET)
 	 * 
@@ -68,97 +203,12 @@ public class RoutingPerformance {
 	private static void runCommand() {
 		// Using CIRCUIT mode
 		if(isCircuit) {
-			// Using SHP
-			if(routingScheme == 0){ 
-				for(int i = 0; i < workload.getSize() ; i++) {
-					// Run initGraph every time otherwise results from previous algo messes up.
-					initGraph();
-					
-					// Run Shortest Hop Algorithm
-					SHP shp = new SHP(graph);
-					System.out.println("Path from "+workload.getOrigins().get(i)+" to "+(workload.getDestinations().get(i))+" is:");
-					Node from = graph.getNode(workload.getOrigins().get(i));
-					Node to = graph.getNode(workload.getDestinations().get(i));
-					ArrayList<Node> shortestPath = shp.shortestPath(from,to);
-					
-					// Create virtual circuit using generated shortest path
-					VirtualCircuit circuit = new VirtualCircuit(
-							shortestPath, 
-							workload.getEstablishTimes().get(i),
-							workload.getOrigins().get(i),
-							workload.getDestinations().get(i),
-							workload.getTtlList().get(i));
-					
-					// Find the list of edges between the nodes of the shortest path
-					ArrayList<Edge> shortestPathEdges = getShortestPathEdges(shortestPath);
-					// For each edge in the list of edges, clean up any expired VCs, and add the new 
-					// circuit if there is capacity. If at any point an edge has insufficient capacity 
-					// to add the new circuit, set the circuit as blocked and leave the loop immediately.
-					for (Edge e : shortestPathEdges) {
-						e.cleanup(circuit);
-						if (e.hasCapacity()) {
-							e.addCircuit(circuit);
-						} else {
-							circuit.setBlocked();
-							break;
-						}
-					}
-					// Check if the circuit is blocked. If yes, iterate through edges in shortest path
-					// again, and remove all instances of that circuit from any lists that contain it.
-					if (circuit.blocked()) {
-						for (Edge e : shortestPathEdges) {
-							if (e.getCircuits().contains(circuit))
-								e.getCircuits().remove(circuit);
-						}
-					}
-				}
-			// Using SDP
-			} else if(routingScheme == 1) {
-				for(int i = 0; i < workload.getSize() ; i++) {
-					//Run initGraph every time otherwise results from previous algo messes up.
-					initGraph();
-					
-					// Run Shortest Delay Path Algorithm
-					SDP sdp = new SDP(graph);
-					System.out.println("Path from "+workload.getOrigins().get(i)+"to "+(workload.getDestinations().get(i))+" is:");
-					Node from = graph.getNode(workload.getOrigins().get(i));
-					Node to = graph.getNode(workload.getDestinations().get(i));
-					ArrayList<Node> shortestPath = sdp.shortestPath(from,to);
-					
-					// Create virtual circuit using generated shortest path
-					VirtualCircuit circuit = new VirtualCircuit(
-							sdp.shortestPath(from,to), 
-							workload.getEstablishTimes().get(i),
-							workload.getOrigins().get(i),
-							workload.getDestinations().get(i),
-							workload.getTtlList().get(i));
-					// Find the list of edges between the nodes of the shortest path
-					ArrayList<Edge> shortestPathEdges = getShortestPathEdges(shortestPath);
-					// For each edge in the list of edges, clean up any expired VCs, and add the new 
-					// circuit if there is capacity.
-					for (Edge e : shortestPathEdges) {
-						e.cleanup(circuit);
-						if (e.hasCapacity()) {
-							e.addCircuit(circuit);
-						} else {
-							circuit.setBlocked();
-							break;
-						}
-					}
-					// Check if the circuit is blocked. If yes, iterate through edges in shortest path
-					// again, and remove all instances of that circuit from any lists that contain it.
-					if (circuit.blocked()) {
-						for (Edge e : shortestPathEdges) {
-							if (e.getCircuits().contains(circuit))
-								e.getCircuits().remove(circuit);
-						}
-					}
-				}
-			}
+			runCircuit();
+		} else {
+			runPacket();
 		}
 	}
 	
-	// TODO RENAME ALL INSTANCES OF ADJACENCYLIST TO EDGES.
 	public static ArrayList<Edge> getShortestPathEdges(ArrayList<Node> shortestPath) {
 		ArrayList<Edge> shortestPathEdges = new ArrayList<Edge>();
 		Node current;
@@ -282,7 +332,7 @@ public class RoutingPerformance {
 		            	workload.getEstablishTimes().add(reader.nextDouble());
 		            	workload.getOrigins().add(reader.next());
 		            	workload.getDestinations().add(reader.next());
-		            	workload.getTtlList().add(reader.nextDouble());
+		            	workload.getActiveDurationList().add(reader.nextDouble());
 		            }
 		            reader.close();
 		            System.out.println("Workload file: "+args[3]);

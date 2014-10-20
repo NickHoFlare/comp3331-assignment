@@ -14,6 +14,14 @@ public class RoutingPerformance {
 	private static int packetRate;
 	private static UndirectedGraph graph;
 	
+	private static int vcRequests;
+	private static int totalPackets;
+	private static int routedPackets;
+	private static double routedPacketsPercent;
+	private static int blockedPackets;
+	private static double blockedPacketsPercent;
+	private static double averageCircuitHops;
+	private static double averagePropDelay;
 	
 	public static void main(String[] args) {
 		handleArguments(args);		
@@ -29,6 +37,7 @@ public class RoutingPerformance {
 	 * of VCs in each edge will increment by 1. If the number of circuits exceeds the numSimulCircuits 
 	 * field in any edge, any further circuits will be "blocked", and the packets lost. If the ttl of any 
 	 * circuit is reached, said circuit will expire, and will be removed from all lists that contain it. 
+	 * If any one circuit gets blocked, the WHOLE PATH IS BLOCKED. 
 	 * 
 	 * W.r.t. PACKET: 
 	 * 
@@ -62,22 +71,46 @@ public class RoutingPerformance {
 			// Using SHP
 			if(routingScheme == 0){ 
 				for(int i = 0; i < workload.getSize() ; i++) {
-					//Run initGraph every time otherwise results from previous algo messes up.
+					// Run initGraph every time otherwise results from previous algo messes up.
 					initGraph();
 					
+					// Run Shortest Hop Algorithm
 					SHP shp = new SHP(graph);
 					System.out.println("Path from "+workload.getOrigins().get(i)+" to "+(workload.getDestinations().get(i))+" is:");
 					Node from = graph.getNode(workload.getOrigins().get(i));
 					Node to = graph.getNode(workload.getDestinations().get(i));
 					ArrayList<Node> shortestPath = shp.shortestPath(from,to);
+					
+					// Create virtual circuit using generated shortest path
 					VirtualCircuit circuit = new VirtualCircuit(
 							shortestPath, 
 							workload.getEstablishTimes().get(i),
 							workload.getOrigins().get(i),
 							workload.getDestinations().get(i),
 							workload.getTtlList().get(i));
+					
+					// Find the list of edges between the nodes of the shortest path
 					ArrayList<Edge> shortestPathEdges = getShortestPathEdges(shortestPath);
-					//TODO: Iterate through list of edges in shortest path, call cleanup, add circuits
+					// For each edge in the list of edges, clean up any expired VCs, and add the new 
+					// circuit if there is capacity. If at any point an edge has insufficient capacity 
+					// to add the new circuit, set the circuit as blocked and leave the loop immediately.
+					for (Edge e : shortestPathEdges) {
+						e.cleanup(circuit);
+						if (e.hasCapacity()) {
+							e.addCircuit(circuit);
+						} else {
+							circuit.setBlocked();
+							break;
+						}
+					}
+					// Check if the circuit is blocked. If yes, iterate through edges in shortest path
+					// again, and remove all instances of that circuit from any lists that contain it.
+					if (circuit.blocked()) {
+						for (Edge e : shortestPathEdges) {
+							if (e.getCircuits().contains(circuit))
+								e.getCircuits().remove(circuit);
+						}
+					}
 				}
 			// Using SDP
 			} else if(routingScheme == 1) {
@@ -85,18 +118,41 @@ public class RoutingPerformance {
 					//Run initGraph every time otherwise results from previous algo messes up.
 					initGraph();
 					
+					// Run Shortest Delay Path Algorithm
 					SDP sdp = new SDP(graph);
 					System.out.println("Path from "+workload.getOrigins().get(i)+"to "+(workload.getDestinations().get(i))+" is:");
 					Node from = graph.getNode(workload.getOrigins().get(i));
 					Node to = graph.getNode(workload.getDestinations().get(i));
 					ArrayList<Node> shortestPath = sdp.shortestPath(from,to);
+					
+					// Create virtual circuit using generated shortest path
 					VirtualCircuit circuit = new VirtualCircuit(
 							sdp.shortestPath(from,to), 
 							workload.getEstablishTimes().get(i),
 							workload.getOrigins().get(i),
 							workload.getDestinations().get(i),
 							workload.getTtlList().get(i));
+					// Find the list of edges between the nodes of the shortest path
 					ArrayList<Edge> shortestPathEdges = getShortestPathEdges(shortestPath);
+					// For each edge in the list of edges, clean up any expired VCs, and add the new 
+					// circuit if there is capacity.
+					for (Edge e : shortestPathEdges) {
+						e.cleanup(circuit);
+						if (e.hasCapacity()) {
+							e.addCircuit(circuit);
+						} else {
+							circuit.setBlocked();
+							break;
+						}
+					}
+					// Check if the circuit is blocked. If yes, iterate through edges in shortest path
+					// again, and remove all instances of that circuit from any lists that contain it.
+					if (circuit.blocked()) {
+						for (Edge e : shortestPathEdges) {
+							if (e.getCircuits().contains(circuit))
+								e.getCircuits().remove(circuit);
+						}
+					}
 				}
 			}
 		}
@@ -111,7 +167,7 @@ public class RoutingPerformance {
 		for (int i = 0 ; i < (shortestPath.size()-1) ; i++) {
 			current = shortestPath.get(i);
 			next = shortestPath.get(i+1);
-			for (Edge e : graph.getAdjacencyList()) {
+			for (Edge e : graph.getEdges()) {
 				if (e.getFrom().getName().equalsIgnoreCase(current.getName()) && 
 						e.getTo().getName().equalsIgnoreCase(next.getName())) {
 					shortestPathEdges.add(e);
@@ -157,8 +213,8 @@ public class RoutingPerformance {
 			}
 			
 			//Undirected graph has edge going both ways.
-			graph.addAdjacency(edge1);
-			graph.addAdjacency(edge2);
+			graph.addEdge(edge1);
+			graph.addEdge(edge2);
 		}
 	}
 	

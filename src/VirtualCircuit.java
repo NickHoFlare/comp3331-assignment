@@ -11,6 +11,7 @@ public class VirtualCircuit {
 	private String origin;
 	private String destination;
 	private double ttl;
+	private boolean blocked;
 	
 	public VirtualCircuit(ArrayList<Node> path, double establishTime, String origin, String destination, double ttl) {
 		shortestPath = path;
@@ -18,6 +19,7 @@ public class VirtualCircuit {
 		this.origin = origin;
 		this.destination = destination;
 		this.ttl = ttl;
+		blocked = false;
 	}
 	
 	public ArrayList<Node> getShortestPath() {
@@ -40,5 +42,11 @@ public class VirtualCircuit {
 		return ttl;
 	}
 	
+	public boolean blocked() {
+		return blocked;
+	}
 	
+	public void setBlocked() {
+		blocked = true;
+	}
 }

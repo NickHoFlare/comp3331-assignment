@@ -28,6 +28,9 @@ public class RoutingPerformance {
 		runCommand();
 	}
 	
+	//TODO: move initGraph out of the loop. make sure graph state persists. 
+	// ensure that additions/deletions of VCs properly affect state of the graph
+	
 	private static void runCircuit() {
 		// Using SHP
 		if(routingScheme == 0){ 
@@ -78,7 +81,7 @@ public class RoutingPerformance {
 				
 				// Create virtual circuit using generated shortest path
 				VirtualCircuit circuit = new VirtualCircuit(
-						sdp.shortestPath(from,to), 
+						shortestPath, 
 						workload.getEstablishTimes().get(i),
 						workload.getOrigins().get(i),
 						workload.getDestinations().get(i),
@@ -115,8 +118,17 @@ public class RoutingPerformance {
 					Node to = graph.getNode(workload.getDestinations().get(i));
 					ArrayList<Node> shortestPath = shp.shortestPath(from,to);
 					
+					// Create virtual circuit using generated shortest path
+					VirtualCircuit circuit = new VirtualCircuit(
+							shortestPath, 
+							currentStart,
+							workload.getOrigins().get(i),
+							workload.getDestinations().get(i),
+							ttl);
+					// Find the list of edges between the nodes of the shortest path
+					ArrayList<Edge> shortestPathEdges = getShortestPathEdges(shortestPath);
 					
-					
+					manageCircuits(circuit, shortestPathEdges, 1);
 					
 					currentStart += ttl;
 				}
@@ -124,7 +136,37 @@ public class RoutingPerformance {
 			
 		// Using SDP
 		} else if (routingScheme == 1) {
-		
+			for(int i = 0 ; i < workload.getSize() ; i++) {
+				int numPackets = (int) Math.ceil(packetRate * workload.getActiveDurationList().get(i));
+				double ttl = 1 / packetRate;
+				double currentStart = workload.getEstablishTimes().get(i);
+				
+				for (int j = 0 ; j < numPackets ; j++) {
+					// Run initGraph every time otherwise results from previous algo messes up.
+					initGraph();
+					
+					// Run Shortest Hop Algorithm
+					SDP sdp = new SDP(graph);
+					System.out.println("Path from "+workload.getOrigins().get(i)+" to "+(workload.getDestinations().get(i))+" is:");
+					Node from = graph.getNode(workload.getOrigins().get(i));
+					Node to = graph.getNode(workload.getDestinations().get(i));
+					ArrayList<Node> shortestPath = sdp.shortestPath(from,to);
+					
+					// Create virtual circuit using generated shortest path
+					VirtualCircuit circuit = new VirtualCircuit(
+							shortestPath, 
+							currentStart,
+							workload.getOrigins().get(i),
+							workload.getDestinations().get(i),
+							ttl);
+					// Find the list of edges between the nodes of the shortest path
+					ArrayList<Edge> shortestPathEdges = getShortestPathEdges(shortestPath);
+					
+					manageCircuits(circuit, shortestPathEdges, 1);
+					
+					currentStart += ttl;
+				}
+			}
 			
 		// Using LLP
 		} else if (routingScheme == 2) {
@@ -132,6 +174,7 @@ public class RoutingPerformance {
 		}
 	}
 	
+	// This can be used for both VCN and VPN. If VPN, set numPackets to 1.
 	public static void manageCircuits(VirtualCircuit circuit, ArrayList<Edge> shortestPathEdges, int numPackets) {
 		// For each edge in the list of edges, clean up any expired VCs, and add the new 
 		// circuit if there is capacity. If at any point an edge has insufficient capacity 

@@ -32,6 +32,8 @@ public class RoutingPerformance {
 	// ensure that additions/deletions of VCs properly affect state of the graph
 	
 	private static void runCircuit() {
+		initGraph();
+		
 		// Using SHP
 		if(routingScheme == 0){ 
 			for(int i = 0; i < workload.getSize() ; i++) {
@@ -40,7 +42,7 @@ public class RoutingPerformance {
 				System.out.println("num packets being sent out: "+numPackets);
 				
 				// Run initGraph every time otherwise results from previous algo messes up.
-				initGraph();
+				// initGraph();
 				
 				// Run Shortest Hop Algorithm
 				SHP shp = new SHP(graph);
@@ -70,7 +72,7 @@ public class RoutingPerformance {
 				System.out.println("num packets being sent out: "+numPackets);
 				
 				// Run initGraph every time otherwise results from previous algo messes up.
-				initGraph();
+				//initGraph();
 				
 				// Run Shortest Delay Path Algorithm
 				SDP sdp = new SDP(graph);
@@ -100,6 +102,8 @@ public class RoutingPerformance {
 	}
 	
 	private static void runPacket() {
+		initGraph();
+		
 		// Using SHP
 		if(routingScheme == 0){ 
 			for(int i = 0 ; i < workload.getSize() ; i++) {
@@ -109,7 +113,7 @@ public class RoutingPerformance {
 				
 				for (int j = 0 ; j < numPackets ; j++) {
 					// Run initGraph every time otherwise results from previous algo messes up.
-					initGraph();
+					//initGraph();
 					
 					// Run Shortest Hop Algorithm
 					SHP shp = new SHP(graph);
@@ -143,7 +147,7 @@ public class RoutingPerformance {
 				
 				for (int j = 0 ; j < numPackets ; j++) {
 					// Run initGraph every time otherwise results from previous algo messes up.
-					initGraph();
+					//initGraph();
 					
 					// Run Shortest Hop Algorithm
 					SDP sdp = new SDP(graph);

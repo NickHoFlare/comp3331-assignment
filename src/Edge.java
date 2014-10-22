@@ -45,10 +45,12 @@ public class Edge {
 	}
 	
 	public boolean hasCapacity() {
+		System.out.println("numCircuits: "+numCircuits()+", numSimulCircuits field: "+numSimulCircuits);
 		if (numCircuits() < numSimulCircuits) {
-			System.out.println("System has capacity. numCircuits: "+numCircuits()+", numSimulCircuits field: "+numSimulCircuits);
+			System.out.println("System has capacity.");
 			return true;
 		} else {
+			System.out.println("Insufficient capacity.");
 			return false;
 		}
 	}
@@ -56,6 +58,15 @@ public class Edge {
 	public void cleanup(VirtualCircuit newCircuit) {
 		double newEstablishTime = newCircuit.getEstablishTime();
 		
+		for (int i = 0 ; i < circuits.size() ; i++) {
+			double expireTime = circuits.get(i).getEstablishTime() + circuits.get(i).getTTL();
+			
+			// If the VC has already expired at the time of adding the new circuit, remove the old one.
+			if (expireTime < newEstablishTime) {
+				circuits.remove(i);
+			}
+		}
+		/*
 		for (VirtualCircuit vc : circuits) {
 			double expireTime = vc.getEstablishTime() + vc.getTTL();
 			
@@ -64,5 +75,6 @@ public class Edge {
 				circuits.remove(vc);
 			}
 		}
+		*/
 	}
 }

@@ -108,12 +108,15 @@ public class RoutingPerformance {
 		if(routingScheme == 0){ 
 			for(int i = 0 ; i < workload.getSize() ; i++) {
 				int numPackets = (int) Math.ceil(packetRate * workload.getActiveDurationList().get(i));
-				double ttl = 1 / packetRate;
+				double ttl = 1.0 / packetRate;
 				double currentStart = workload.getEstablishTimes().get(i);
 				
 				for (int j = 0 ; j < numPackets ; j++) {
+					System.out.println("------------------------------");
 					// Run initGraph every time otherwise results from previous algo messes up.
 					//initGraph();
+					
+					System.out.println("currentStart is "+currentStart+", ttl is "+ttl+", packetRate is "+packetRate);
 					
 					// Run Shortest Hop Algorithm
 					SHP shp = new SHP(graph);
@@ -142,10 +145,11 @@ public class RoutingPerformance {
 		} else if (routingScheme == 1) {
 			for(int i = 0 ; i < workload.getSize() ; i++) {
 				int numPackets = (int) Math.ceil(packetRate * workload.getActiveDurationList().get(i));
-				double ttl = 1 / packetRate;
+				double ttl = 1.0 / packetRate;
 				double currentStart = workload.getEstablishTimes().get(i);
 				
 				for (int j = 0 ; j < numPackets ; j++) {
+					System.out.println("------------------------------");
 					// Run initGraph every time otherwise results from previous algo messes up.
 					//initGraph();
 					

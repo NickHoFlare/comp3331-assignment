@@ -207,10 +207,16 @@ public class RoutingPerformance {
 		// Check if the circuit is blocked. If yes, iterate through edges in shortest path
 		// again, and remove all instances of that circuit from any lists that contain it.
 		if (circuit.blocked()) {
+			for (int i = 0 ; i < shortestPathEdges.size() ; i++) {
+				if (shortestPathEdges.get(i).getCircuits().contains(circuit))
+					shortestPathEdges.get(i).getCircuits().remove(circuit);
+			}
+			/*
 			for (Edge e : shortestPathEdges) {
 				if (e.getCircuits().contains(circuit))
 					e.getCircuits().remove(circuit);
 			}
+			*/
 		}
 	}
 	

@@ -91,6 +91,8 @@ public class RoutingPerformance {
 			for(int i = 0; i < workload.getSize() ; i++) {
 				System.out.println("------------------------------");
 				int numPackets = (int) Math.ceil(packetRate * workload.getActiveDurationList().get(i));
+				totalPackets += numPackets;
+				
 				System.out.println("num packets being sent out: "+numPackets);
 				
 				// Run initGraph every time otherwise results from previous algo messes up.
@@ -132,6 +134,8 @@ public class RoutingPerformance {
 		if(routingScheme == 0){ 
 			for(int i = 0 ; i < workload.getSize() ; i++) {
 				int numPackets = (int) Math.ceil(packetRate * workload.getActiveDurationList().get(i));
+				totalPackets += numPackets;
+				
 				double ttl = 1.0 / packetRate;
 				double currentStart = workload.getEstablishTimes().get(i);
 				
@@ -319,9 +323,13 @@ public class RoutingPerformance {
 	}
 	
 	public static void calculateStats() {
-		routedPacketsPercent = routedPackets / totalPackets * 100.0;
-		blockedPacketsPercent = blockedPackets / totalPackets * 100.0;
-		averageCircuitHops = (double) totalHops / (double) vcRequests;
+		routedPacketsPercent = (double) routedPackets / (double) totalPackets * 100.0;
+		blockedPacketsPercent = (double) blockedPackets / (double) totalPackets * 100.0;
+		if (isCircuit) {
+			averageCircuitHops = (double) totalHops / (double) vcRequests;
+		} else {
+			averageCircuitHops = (double) totalHops / (double) successfulVCs;
+		}
 		averagePropDelay = totalPropDelay / successfulVCs;
 	}
 	

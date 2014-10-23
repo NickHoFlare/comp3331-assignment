@@ -15,17 +15,37 @@ public class RoutingPerformance {
 	private static UndirectedGraph graph;
 	
 	private static int vcRequests;
+	private static int successfulVCs;
 	private static int totalPackets;
 	private static int routedPackets;
 	private static double routedPacketsPercent;
 	private static int blockedPackets;
 	private static double blockedPacketsPercent;
+	private static int totalHops;
 	private static double averageCircuitHops;
+	private static double totalPropDelay;
 	private static double averagePropDelay;
 	
 	public static void main(String[] args) {
+		initStats();
 		handleArguments(args);		
 		runCommand();
+		calculateStats();
+		printStats();
+	}
+	
+	public static void initStats() {
+		vcRequests = 0;
+		successfulVCs = 0;
+		totalPackets = 0;
+		routedPackets = 0;
+		routedPacketsPercent = 0;
+		blockedPackets = 0;
+		blockedPacketsPercent = 0;
+		totalHops = 0;
+		averageCircuitHops = 0;
+		totalPropDelay = 0;
+		averagePropDelay = 0;
 	}
 	
 	//TODO: move initGraph out of the loop. make sure graph state persists. 
@@ -39,6 +59,7 @@ public class RoutingPerformance {
 			for(int i = 0; i < workload.getSize() ; i++) {
 				System.out.println("------------------------------");
 				int numPackets = (int) Math.ceil(packetRate * workload.getActiveDurationList().get(i));
+				totalPackets += numPackets;
 				System.out.println("num packets being sent out: "+numPackets);
 				
 				// Run initGraph every time otherwise results from previous algo messes up.
@@ -58,6 +79,7 @@ public class RoutingPerformance {
 						workload.getOrigins().get(i),
 						workload.getDestinations().get(i),
 						workload.getActiveDurationList().get(i));
+				vcRequests++;
 				
 				// Find the list of edges between the nodes of the shortest path
 				ArrayList<Edge> shortestPathEdges = getShortestPathEdges(shortestPath);
@@ -88,6 +110,8 @@ public class RoutingPerformance {
 						workload.getOrigins().get(i),
 						workload.getDestinations().get(i),
 						workload.getActiveDurationList().get(i));
+				vcRequests++;
+				
 				// Find the list of edges between the nodes of the shortest path
 				ArrayList<Edge> shortestPathEdges = getShortestPathEdges(shortestPath);
 				
@@ -132,6 +156,8 @@ public class RoutingPerformance {
 							workload.getOrigins().get(i),
 							workload.getDestinations().get(i),
 							ttl);
+					vcRequests++;
+					
 					// Find the list of edges between the nodes of the shortest path
 					ArrayList<Edge> shortestPathEdges = getShortestPathEdges(shortestPath);
 					
@@ -167,6 +193,8 @@ public class RoutingPerformance {
 							workload.getOrigins().get(i),
 							workload.getDestinations().get(i),
 							ttl);
+					vcRequests++;
+					
 					// Find the list of edges between the nodes of the shortest path
 					ArrayList<Edge> shortestPathEdges = getShortestPathEdges(shortestPath);
 					
@@ -195,7 +223,12 @@ public class RoutingPerformance {
 				if (shortestPathEdges.indexOf(e) == shortestPathEdges.size()-1) {
 					routedPackets += numPackets;
 					System.out.println("Total packets Routed: "+routedPackets);
+					successfulVCs++;
+					System.out.println("Num total successfulVCs: "+successfulVCs);
 				}
+				totalHops++;
+				totalPropDelay += e.getPropagationDelay();
+				System.out.println("TotalPropDelay: "+totalPropDelay);
 			} else {
 				circuit.setBlocked();
 				blockedPackets += numPackets;
@@ -283,6 +316,25 @@ public class RoutingPerformance {
 		}
 		System.out.println("size of shortestPathEdges: "+shortestPathEdges.size());
 		return shortestPathEdges;
+	}
+	
+	public static void calculateStats() {
+		routedPacketsPercent = routedPackets / totalPackets * 100.0;
+		blockedPacketsPercent = blockedPackets / totalPackets * 100.0;
+		averageCircuitHops = (double) totalHops / (double) vcRequests;
+		averagePropDelay = totalPropDelay / successfulVCs;
+	}
+	
+	public static void printStats() {
+		System.out.println("===== STATISTICS =====");
+		System.out.println("total number of virtual circuit requests: "+vcRequests);
+		System.out.println("total number of packets: "+totalPackets);
+		System.out.println("number of successfully routed packets: "+routedPackets);
+		System.out.println("percentage of successfully routed packets: "+String.format("%.2f",routedPacketsPercent));
+		System.out.println("number of blocked packets: "+blockedPackets);
+		System.out.println("percentage of blocked packets: "+String.format("%.2f",blockedPacketsPercent));
+		System.out.println("average number of hops per circuit: "+String.format("%.2f",averageCircuitHops));
+		System.out.println("average cumulative propagation delay per circuit: "+String.format("%.2f",averagePropDelay));
 	}
 	
 	public static void initGraph() {

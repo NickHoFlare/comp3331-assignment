@@ -62,7 +62,7 @@ public class Edge {
 			double expireTime = circuits.get(i).getEstablishTime() + circuits.get(i).getTTL();
 			// If the VC has already expired at the time of adding the new circuit, remove the old one.
 			if (expireTime < newEstablishTime) {
-				System.out.println("circuit expired, removing.");
+				System.out.println("expireTime of circuit: "+expireTime+", newEstablishTime: "+newEstablishTime+" - circuit expired, removing.");
 				circuits.remove(i);
 			}
 		}

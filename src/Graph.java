@@ -6,4 +6,5 @@ public interface Graph {
 	public ArrayList<Node> getNodes();
 	public ArrayList<Edge> getAdjacencies(Node a);
 	public Node getNode(String node);
+	public Edge getEdge(Node from,Node to);
 }

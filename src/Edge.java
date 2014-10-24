@@ -5,7 +5,7 @@ public class Edge {
 	private Node from;
 	private Node to;
 	private int propagationDelay;
-	private int numSimulCircuits;
+	private double numSimulCircuits;
 	private ArrayList<VirtualCircuit> circuits;
 	
 	public Edge(Node from,Node to, int propDelay, int numSimulCircuits) {
@@ -20,7 +20,7 @@ public class Edge {
 		return propagationDelay;
 	}
 	
-	public int getNumSimulCircuits() {
+	public double getNumSimulCircuits() {
 		return numSimulCircuits;
 	}
 	
@@ -40,7 +40,7 @@ public class Edge {
 		return circuits;
 	}
 	
-	public int numCircuits() {
+	public double numCircuits() {
 		return circuits.size();
 	}
 	

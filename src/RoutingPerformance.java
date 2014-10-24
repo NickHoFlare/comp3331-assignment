@@ -122,7 +122,34 @@ public class RoutingPerformance {
 		// Using LLP
 		} else if(routingScheme == 2) {
 			for(int i = 0; i < workload.getSize() ; i++) {
+				System.out.println("------------------------------");
+				int numPackets = (int) Math.ceil(packetRate * workload.getActiveDurationList().get(i));
+				totalPackets += numPackets;
 				
+				System.out.println("num packets being sent out: "+numPackets);
+				
+				// Run LLP Delay Path Algorithm
+				refreshGraph(); //Prevents prev search interfering with current search.
+				LLP llp = new LLP(graph);
+				System.out.println("Path from "+workload.getOrigins().get(i)+"to "+(workload.getDestinations().get(i))+" is:");
+				Node from = graph.getNode(workload.getOrigins().get(i));
+				Node to = graph.getNode(workload.getDestinations().get(i));
+				ArrayList<Node> shortestPath = llp.shortestPath(from,to);
+				
+				
+				// Create virtual circuit using generated shortest path
+				VirtualCircuit circuit = new VirtualCircuit(
+						shortestPath, 
+						workload.getEstablishTimes().get(i),
+						workload.getOrigins().get(i),
+						workload.getDestinations().get(i),
+						workload.getActiveDurationList().get(i));
+				vcRequests++;
+				
+				// Find the list of edges between the nodes of the shortest path
+				ArrayList<Edge> shortestPathEdges = getShortestPathEdges(shortestPath);
+				
+				manageCircuits(circuit, shortestPathEdges, numPackets);
 			}
 		}
 	}
@@ -184,6 +211,7 @@ public class RoutingPerformance {
 					
 					// Run Shortest Hop Algorithm
 					refreshGraph(); //Prevents prev search interfering with current search.
+
 					SDP sdp = new SDP(graph);
 					System.out.println("Path from "+workload.getOrigins().get(i)+" to "+(workload.getDestinations().get(i))+" is:");
 					Node from = graph.getNode(workload.getOrigins().get(i));

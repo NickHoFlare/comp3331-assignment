@@ -33,7 +33,7 @@ public class SHP {
 				//toNode is the node stored inside the adjacency list. to is the node stored inside the graph.
 				Node to = graph.getNode(toNode.getName());
 				// SHP is dijkstras with weight 1 for each edge.
-				int totalDistance = from.getMinDist() + 1; 
+				double totalDistance = from.getMinDist() + 1; 
 				if(totalDistance < to.getMinDist()){
 					NodeQueue.remove(to);
 					to.setMinDist(totalDistance);

@@ -4,30 +4,20 @@ import java.util.ArrayList;
 public class UndirectedGraph implements Graph {
 	private ArrayList<Node> nodes;
 	private ArrayList<Edge> edges;
-	//private ArrayList<Edge> adjacencyList;
 	
 	public UndirectedGraph() {
 		nodes = new ArrayList<Node>();
 		edges = new ArrayList<Edge>();
-		//adjacencyList = new ArrayList<Edge>();
 	}
 	
-	@Override
 	public void addNode(Node node) {
 		nodes.add(node);
 	}
 
-	@Override
 	public ArrayList<Node> getNodes() {
 		return nodes;
 	}
 
-	//@Override
-	//public void addAdjacency(Edge adjacency) {
-	//	adjacencyList.add(adjacency);
-	//}
-
-	@Override
 	public ArrayList<Edge> getAdjacencies(Node a) {
 		ArrayList <Edge> connectingEdges = new ArrayList<Edge>();
 		for(Edge e:edges){
@@ -38,10 +28,6 @@ public class UndirectedGraph implements Graph {
 		return connectingEdges;
 	}
 	
-	//public ArrayList<Edge> getAdjacencyList() {
-	//	return adjacencyList;
-	//}
-
 	public void addEdge(Edge edge) {
 		edges.add(edge);
 	}
@@ -50,10 +36,21 @@ public class UndirectedGraph implements Graph {
 		return edges;
 	}
 	
+	
 	public Node getNode(String node){
 		for(Node n: nodes){
 			if(n.getName().equals(node)){
 				return n;
+			}
+		}
+		return null;
+	}
+	
+	public Edge getEdge(Node from,Node to){
+		for(Edge e:edges){
+			if(e.getFrom().getName().equals(from.getName()) &&
+			   e.getTo().getName().equals(to.getName())){
+				return e;
 			}
 		}
 		return null;

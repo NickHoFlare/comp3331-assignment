@@ -58,7 +58,7 @@ public class RoutingPerformance {
 		if(routingScheme == 0){ 
 			for(int i = 0; i < workload.getSize() ; i++) {
 				System.out.println("------------------------------");
-				int numPackets = (int) Math.ceil(packetRate * workload.getActiveDurationList().get(i));
+				int numPackets = (int) Math.ceil(packetRate * workload.getActiveDurationList().get(i)); //No of packets that will potentially be sent for line of the workload
 				totalPackets += numPackets;
 				System.out.println("num packets being sent out: "+numPackets);
 				
@@ -137,7 +137,7 @@ public class RoutingPerformance {
 				totalPackets += numPackets;
 				
 				double ttl = 1.0 / packetRate;
-				double currentStart = workload.getEstablishTimes().get(i);
+				double currentStart = workload.getEstablishTimes().get(i); //Start of the current virtual circuit we are working with.
 				
 				for (int j = 0 ; j < numPackets ; j++) {
 					System.out.println("------------------------------");
@@ -165,6 +165,7 @@ public class RoutingPerformance {
 					// Find the list of edges between the nodes of the shortest path
 					ArrayList<Edge> shortestPathEdges = getShortestPathEdges(shortestPath);
 					
+					//1 Packet since we are making a new vc for each packet.
 					manageCircuits(circuit, shortestPathEdges, 1);
 					
 					currentStart += ttl;
@@ -230,8 +231,8 @@ public class RoutingPerformance {
 					successfulVCs++;
 					System.out.println("Num total successfulVCs: "+successfulVCs);
 				}
-				totalHops++;
-				totalPropDelay += e.getPropagationDelay();
+				totalHops++; //TODO: Possible bug.
+				totalPropDelay += e.getPropagationDelay(); //TODO: Possible bug.
 				System.out.println("TotalPropDelay: "+totalPropDelay);
 			} else {
 				circuit.setBlocked();

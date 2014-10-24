@@ -66,6 +66,7 @@ public class RoutingPerformance {
 				// initGraph();
 				
 				// Run Shortest Hop Algorithm
+				refreshGraph(); //Prevents prev search interfering with current search.
 				SHP shp = new SHP(graph);
 				System.out.println("Path from "+workload.getOrigins().get(i)+" to "+(workload.getDestinations().get(i))+" is:");
 				Node from = graph.getNode(workload.getOrigins().get(i));
@@ -95,15 +96,14 @@ public class RoutingPerformance {
 				
 				System.out.println("num packets being sent out: "+numPackets);
 				
-				// Run initGraph every time otherwise results from previous algo messes up.
-				//initGraph();
-				
 				// Run Shortest Delay Path Algorithm
+				refreshGraph(); //Prevents prev search interfering with current search.
 				SDP sdp = new SDP(graph);
 				System.out.println("Path from "+workload.getOrigins().get(i)+"to "+(workload.getDestinations().get(i))+" is:");
 				Node from = graph.getNode(workload.getOrigins().get(i));
 				Node to = graph.getNode(workload.getDestinations().get(i));
 				ArrayList<Node> shortestPath = sdp.shortestPath(from,to);
+				
 				
 				// Create virtual circuit using generated shortest path
 				VirtualCircuit circuit = new VirtualCircuit(
@@ -141,12 +141,11 @@ public class RoutingPerformance {
 				
 				for (int j = 0 ; j < numPackets ; j++) {
 					System.out.println("------------------------------");
-					// Run initGraph every time otherwise results from previous algo messes up.
-					//initGraph();
-					
+
 					System.out.println("currentStart is "+currentStart+", ttl is "+ttl+", packetRate is "+packetRate);
 					
 					// Run Shortest Hop Algorithm
+					refreshGraph();
 					SHP shp = new SHP(graph);
 					System.out.println("Path from "+workload.getOrigins().get(i)+" to "+(workload.getDestinations().get(i))+" is:");
 					Node from = graph.getNode(workload.getOrigins().get(i));
@@ -181,10 +180,10 @@ public class RoutingPerformance {
 				
 				for (int j = 0 ; j < numPackets ; j++) {
 					System.out.println("------------------------------");
-					// Run initGraph every time otherwise results from previous algo messes up.
-					//initGraph();
+
 					
 					// Run Shortest Hop Algorithm
+					refreshGraph(); //Prevents prev search interfering with current search.
 					SDP sdp = new SDP(graph);
 					System.out.println("Path from "+workload.getOrigins().get(i)+" to "+(workload.getDestinations().get(i))+" is:");
 					Node from = graph.getNode(workload.getOrigins().get(i));
@@ -383,6 +382,19 @@ public class RoutingPerformance {
 			//Undirected graph has edge going both ways.
 			graph.addEdge(edge1);
 			graph.addEdge(edge2);
+		}
+	}
+	
+	/**
+	 * Every time that we want to run a path algorithm
+	 * it is necessary to reset the nodes to thier
+	 * default values to prevent previous searches
+	 * interfering with the current search.
+	 */
+	public static void refreshGraph() {
+		for(Node n:graph.getNodes()){
+			n.setPrev(null);
+			n.setMinDist(2000000);
 		}
 	}
 	

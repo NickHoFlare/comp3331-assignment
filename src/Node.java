@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 public class Node implements Comparable<Node>{
 	private String name;
-	private double minDistace = 2000000; 
+	private double minDistance = 2000000; 
 	//This is the minimum distance it takes to move from the origin node to the current node.
 	//Use 2,147,483,647 to represent infinity. (We cannot reach this node directly.)
 	//Biggest int in java is that anyway.
@@ -22,11 +22,11 @@ public class Node implements Comparable<Node>{
 	}
 	
 	public void setMinDist(double dist){
-		minDistace = dist;
+		minDistance = dist;
 	}
 	
 	public double getMinDist(){
-		return minDistace;
+		return minDistance;
 	}
 	
 	public void setPrev(Node prev){
@@ -34,6 +34,6 @@ public class Node implements Comparable<Node>{
 	}
 
 	public int compareTo(Node other) {
-		return Double.compare(minDistace, other.minDistace);
+		return Double.compare(minDistance, other.minDistance);
 	}
 }

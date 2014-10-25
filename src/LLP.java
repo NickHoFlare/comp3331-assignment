@@ -16,16 +16,17 @@ public class LLP {
 	 * This is an implementation of dijikstras algorithm using a priority queue.
 	 * Code is based from http://www.algolist.com/code/java/Dijkstra's_algorithm
 	 * @param source The source node.
-	 * @param Destination The destination node.
+	 * @param destination The destination node.
 	 */
-	public ArrayList<Node> shortestPath(Node source,Node Destination){
+	public ArrayList<Node> shortestPath(Node source,Node destination){
 		PriorityQueue<Node> NodeQueue = new PriorityQueue<Node>();
 		
 		source.setMinDist(0);
 		NodeQueue.add(source);
 				
 		//Run the algorithm
-		while (NodeQueue.size()>0){
+		while (!NodeQueue.isEmpty()){		// ***I MADE THIS CHANGE. YOU USED THIS FOR SDP AND SHP.***
+		//while (NodeQueue.size()>0){
 			Node from = NodeQueue.poll();
 			for (Edge e: graph.getAdjacencies(from)){
 				Node toNode = e.getTo();
@@ -44,7 +45,7 @@ public class LLP {
 				//Compute the new load overall by comparing with the load just generated.
 				//We are trying to get the largest number here.
 				ArrayList<Node> path = new ArrayList<Node>();
-		        for (Node n = Destination; n != null; n = n.getPrev()){
+		        for (Node n = destination; n != null; n = n.getPrev()){
 		            path.add(n);
 		        }
 		        for (int i = 0; i < path.size()-1; i++) {
@@ -68,7 +69,7 @@ public class LLP {
 		
 		//Find the shortest path using the successive prev values from the destination.
 		ArrayList<Node> path = new ArrayList<Node>();
-        for (Node n = Destination; n != null; n = n.getPrev()){
+        for (Node n = destination; n != null; n = n.getPrev()){
             path.add(n);
         }
         Collections.reverse(path);

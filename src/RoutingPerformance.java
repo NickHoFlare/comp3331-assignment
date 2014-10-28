@@ -363,14 +363,14 @@ public class RoutingPerformance {
 	
 	public static void printStats() {
 		System.out.println("===== STATISTICS =====");
-		System.out.println("total number of virtual circuit requests: "+vcRequests);
-		System.out.println("total number of packets: "+totalPackets);
-		System.out.println("number of successfully routed packets: "+routedPackets);
-		System.out.println("percentage of successfully routed packets: "+String.format("%.2f",routedPacketsPercent));
-		System.out.println("number of blocked packets: "+blockedPackets);
-		System.out.println("percentage of blocked packets: "+String.format("%.2f",blockedPacketsPercent));
-		System.out.println("average number of hops per circuit: "+String.format("%.2f",averageCircuitHops));
-		System.out.println("average cumulative propagation delay per circuit: "+String.format("%.2f",averagePropDelay));
+		System.out.println("total number of virtual circuit requests: "+vcRequests+"\n");
+		System.out.println("total number of packets: "+totalPackets+"\n");
+		System.out.println("number of successfully routed packets: "+routedPackets+"\n");
+		System.out.println("percentage of successfully routed packets: "+String.format("%.2f",routedPacketsPercent)+"\n");
+		System.out.println("number of blocked packets: "+blockedPackets+"\n");
+		System.out.println("percentage of blocked packets: "+String.format("%.2f",blockedPacketsPercent)+"\n");
+		System.out.println("average number of hops per circuit: "+String.format("%.2f",averageCircuitHops)+"\n");
+		System.out.println("average cumulative propagation delay per circuit: "+String.format("%.2f",averagePropDelay)+"\n");
 	}
 	
 	public static void initGraph() {

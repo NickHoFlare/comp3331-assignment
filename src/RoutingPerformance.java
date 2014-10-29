@@ -244,6 +244,12 @@ public class RoutingPerformance {
 	
 	// This can be used for both VCN and VPN. If VPN, set numPackets to 1.
 	public static void manageCircuits(VirtualCircuit circuit, ArrayList<Edge> shortestPathEdges, int numPackets) {
+		// We use tempTotalHops and tempTotalPropDelay because we don't want to increment the real fields if the VC
+		// ends up being blocked. So we increment temp values, and commit to the real fields ONLY if the entire circuit
+		// gets established.
+		int tempHops = 0;
+		double tempPropDelay = 0.0;
+		
 		// For each edge in the list of edges, clean up any expired VCs, and add the new 
 		// circuit if there is capacity. If at any point an edge has insufficient capacity 
 		// to add the new circuit, set the circuit as blocked and leave the loop immediately.
@@ -251,16 +257,22 @@ public class RoutingPerformance {
 			e.cleanup(circuit);
 			if (e.hasCapacity()) {
 				e.addCircuit(circuit);
+				tempHops++; 
+				tempPropDelay += e.getPropagationDelay();
 				// If entire circuit has been established, we consider the packets allocated.
 				if (shortestPathEdges.indexOf(e) == shortestPathEdges.size()-1) {
 					routedPackets += numPackets;
 					System.out.println("Total packets Routed: "+routedPackets);
 					successfulVCs++;
 					System.out.println("Num total successfulVCs: "+successfulVCs);
+					
+					// Because we call manageCircuits for each directional edge, we increment totalHops and propdelay a redundant
+					// second time for each bidirectional link. This removes it.
+					tempHops /= 2;
+					tempPropDelay /= 2;
+					totalHops += tempHops;
+					totalPropDelay += tempPropDelay;
 				}
-				totalHops++; //TODO: Possible bug.
-				totalPropDelay += e.getPropagationDelay(); //TODO: Possible bug.
-				System.out.println("TotalPropDelay: "+totalPropDelay);
 			} else {
 				circuit.setBlocked();
 				blockedPackets += numPackets;
@@ -340,8 +352,9 @@ public class RoutingPerformance {
 			current = shortestPath.get(i);
 			next = shortestPath.get(i+1);
 			for (Edge e : graph.getEdges()) {
-				if (e.getFrom().getName().equalsIgnoreCase(current.getName()) && 
-						e.getTo().getName().equalsIgnoreCase(next.getName())) {
+				// Since the edges are meant to be bidirectional, we add both edges pointing in either direction.
+				if ((e.getFrom().getName().equalsIgnoreCase(current.getName()) && e.getTo().getName().equalsIgnoreCase(next.getName()))
+				 || (e.getTo().getName().equalsIgnoreCase(current.getName()) && e.getFrom().getName().equalsIgnoreCase(next.getName()))) {
 					shortestPathEdges.add(e);
 				}
 			}

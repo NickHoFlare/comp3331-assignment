@@ -47,10 +47,10 @@ public class Edge {
 	public boolean hasCapacity() {
 		System.out.println("numCircuits: "+numCircuits()+", numSimulCircuits field: "+numSimulCircuits);
 		if (numCircuits() < numSimulCircuits) {
-			System.out.println("System has capacity.");
+			System.out.println("Edge: "+from.getName()+" to "+to.getName()+", System has capacity.");
 			return true;
 		} else {
-			System.out.println("Insufficient capacity.");
+			System.out.println("Edge: "+from.getName()+" to "+to.getName()+", Insufficient capacity.");
 			return false;
 		}
 	}

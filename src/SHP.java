@@ -11,22 +11,22 @@ public class SHP {
 	}
 	
 	/**
-	 * This is an implementation of dijikstras algorithm using a priority queue.
+	 * This is an implementation of dijkstras algorithm using a priority queue.
 	 * Code is based from http://www.algolist.com/code/java/Dijkstra's_algorithm
 	 * @param source The source node.
 	 * @param Destination The destination node.
 	 */
 	public ArrayList<Node> shortestPath(Node source,Node Destination){
-		PriorityQueue<Node> NodeQueue = new PriorityQueue<Node>();
+		PriorityQueue<Node> nodeQueue = new PriorityQueue<Node>();
 		
 		source.setMinDist(0);
-		NodeQueue.add(source);
+		nodeQueue.add(source);
 		
 		//System.out.println("----------------------------");
 		
 		//Run the algorithm
-		while (!NodeQueue.isEmpty()){
-			Node from = NodeQueue.poll();
+		while (!nodeQueue.isEmpty()){
+			Node from = nodeQueue.poll();
 			for (Edge e: graph.getAdjacencies(from)){
 				//System.out.println("Path from "+e.getFrom().getName() + " to " + e.getTo().getName());
 				Node toNode = e.getTo();
@@ -35,10 +35,10 @@ public class SHP {
 				// SHP is dijkstras with weight 1 for each edge.
 				double totalDistance = from.getMinDist() + 1; 
 				if(totalDistance < to.getMinDist()){
-					NodeQueue.remove(to);
+					nodeQueue.remove(to);
 					to.setMinDist(totalDistance);
 					to.setPrev(from);
-					NodeQueue.add(to);
+					nodeQueue.add(to);
 				}
 			}
 		}

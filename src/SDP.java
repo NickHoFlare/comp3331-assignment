@@ -17,24 +17,34 @@ public class SDP {
 	 * @param Destination The destination node.
 	 */
 	public ArrayList<Node> shortestPath(Node source,Node Destination){
-		PriorityQueue<Node> NodeQueue = new PriorityQueue<Node>();
+		PriorityQueue<Node> nodeQueue = new PriorityQueue<Node>();
 		
 		source.setMinDist(0);
-		NodeQueue.add(source);
+		nodeQueue.add(source);
 		
 		//Run the algorithm
-		while (!NodeQueue.isEmpty()){
-			Node from = NodeQueue.poll();
+		while (!nodeQueue.isEmpty()){
+			Node from = nodeQueue.poll();
+			
+			// Visit each edge exiting Node from
 			for (Edge e: graph.getAdjacencies(from)){
 				Node toNode = e.getTo();
-				//toNode is the node stored inside the adjacency list. to is the node stored inside the graph.
+				// toNode is the node stored inside the adjacency list. to is the node stored inside the graph.
 				Node to = graph.getNode(toNode.getName());
-				double totalDistance = from.getMinDist() + e.getPropagationDelay(); //SDP is dijkstras with weight 'propagation delay' for each edge.
-				if(totalDistance < to.getMinDist()){
-					NodeQueue.remove(to);
+				// SDP is dijkstras with weight 'propagation delay' for each edge.
+				double totalDistance = from.getMinDist() + e.getPropagationDelay(); 
+				
+				// Check if the total distance calculated for the current Edge is smaller than the minDistance
+				// field of the node that we are visiting. If we are visiting for the first time, it will be 
+				// infinity (or close to it)
+				// If we probe a node and find a path that has shorter distance than the node is currently
+				// "aware" about, we remove the node from the queue, update the minDistance with the new
+				// shorter distance, and re-add the node to the queue.
+				if (totalDistance < to.getMinDist()){
+					nodeQueue.remove(to);
 					to.setMinDist(totalDistance);
 					to.setPrev(from);
-					NodeQueue.add(to);
+					nodeQueue.add(to);
 				}
 			}
 		}

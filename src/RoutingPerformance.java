@@ -403,6 +403,8 @@ public class RoutingPerformance {
 	}
 	
 	public static void calculateStats() {
+		//TODO: NICK LOOK HERE
+
 		routedPacketsPercent = (double) routedPackets / (double) totalPackets * 100.0;
 		blockedPacketsPercent = (double) blockedPackets / (double) totalPackets * 100.0;
 		if (isCircuit) {

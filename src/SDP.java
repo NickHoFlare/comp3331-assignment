@@ -62,7 +62,7 @@ public class SDP {
         	output = output + ", " + n.getName();
         }
         output = output.substring(2);
-        System.out.println(output);
+        //System.out.println(output);
         
         return path;	
 	}

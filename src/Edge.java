@@ -45,12 +45,12 @@ public class Edge {
 	}
 	
 	public boolean hasCapacity() {
-		System.out.println("numCircuits: "+numCircuits()+", numSimulCircuits field: "+numSimulCircuits);
+		//System.out.println("numCircuits: "+numCircuits()+", numSimulCircuits field: "+numSimulCircuits);
 		if (numCircuits() < numSimulCircuits) {
-			System.out.println("Edge: "+from.getName()+" to "+to.getName()+", System has capacity.");
+			//System.out.println("Edge: "+from.getName()+" to "+to.getName()+", System has capacity.");
 			return true;
 		} else {
-			System.out.println("Edge: "+from.getName()+" to "+to.getName()+", Insufficient capacity.");
+			//System.out.println("Edge: "+from.getName()+" to "+to.getName()+", Insufficient capacity.");
 			return false;
 		}
 	}
@@ -62,7 +62,7 @@ public class Edge {
 			double expireTime = circuits.get(i).getEstablishTime() + circuits.get(i).getTTL();
 			// If the VC has already expired at the time of adding the new circuit, remove the old one.
 			if (expireTime < newEstablishTime) {
-				System.out.println("expireTime of circuit: "+expireTime+", newEstablishTime: "+newEstablishTime+" - circuit expired, removing.");
+				//System.out.println("expireTime of circuit: "+expireTime+", newEstablishTime: "+newEstablishTime+" - circuit expired, removing.");
 				circuits.remove(i);
 			}
 		}

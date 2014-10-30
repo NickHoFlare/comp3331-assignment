@@ -57,10 +57,10 @@ public class RoutingPerformance {
 		// Using SHP
 		if(routingScheme == 0){ 
 			for(int i = 0; i < workload.getSize() ; i++) {
-				System.out.println("------------------------------");
+				//System.out.println("------------------------------");
 				int numPackets = (int) Math.ceil(packetRate * workload.getActiveDurationList().get(i)); //No of packets that will potentially be sent for line of the workload
 				totalPackets += numPackets;
-				System.out.println("num packets being sent out: "+numPackets);
+				//System.out.println("num packets being sent out: "+numPackets);
 				
 				// Run initGraph every time otherwise results from previous algo messes up.
 				// initGraph();
@@ -68,7 +68,7 @@ public class RoutingPerformance {
 				// Run Shortest Hop Algorithm
 				refreshGraph(); //Prevents prev search interfering with current search.
 				SHP shp = new SHP(graph);
-				System.out.println("Path from "+workload.getOrigins().get(i)+" to "+(workload.getDestinations().get(i))+" is:");
+				//System.out.println("Path from "+workload.getOrigins().get(i)+" to "+(workload.getDestinations().get(i))+" is:");
 				Node from = graph.getNode(workload.getOrigins().get(i));
 				Node to = graph.getNode(workload.getDestinations().get(i));
 				ArrayList<Node> shortestPath = shp.shortestPath(from,to);
@@ -90,16 +90,16 @@ public class RoutingPerformance {
 		// Using SDP
 		} else if(routingScheme == 1) {
 			for(int i = 0; i < workload.getSize() ; i++) {
-				System.out.println("------------------------------");
+				//System.out.println("------------------------------");
 				int numPackets = (int) Math.ceil(packetRate * workload.getActiveDurationList().get(i));
 				totalPackets += numPackets;
 				
-				System.out.println("num packets being sent out: "+numPackets);
+				//System.out.println("num packets being sent out: "+numPackets);
 				
 				// Run Shortest Delay Path Algorithm
 				refreshGraph(); //Prevents prev search interfering with current search.
 				SDP sdp = new SDP(graph);
-				System.out.println("Path from "+workload.getOrigins().get(i)+"to "+(workload.getDestinations().get(i))+" is:");
+				//System.out.println("Path from "+workload.getOrigins().get(i)+"to "+(workload.getDestinations().get(i))+" is:");
 				Node from = graph.getNode(workload.getOrigins().get(i));
 				Node to = graph.getNode(workload.getDestinations().get(i));
 				ArrayList<Node> shortestPath = sdp.shortestPath(from,to);
@@ -122,16 +122,16 @@ public class RoutingPerformance {
 		// Using LLP
 		} else if(routingScheme == 2) {
 			for(int i = 0; i < workload.getSize() ; i++) {
-				System.out.println("------------------------------");
+				//System.out.println("------------------------------");
 				int numPackets = (int) Math.ceil(packetRate * workload.getActiveDurationList().get(i));
 				totalPackets += numPackets;
 				
-				System.out.println("num packets being sent out: "+numPackets);
+				//System.out.println("num packets being sent out: "+numPackets);
 				
 				// Run LLP Delay Path Algorithm
 				refreshGraph(); //Prevents prev search interfering with current search.
 				LLP llp = new LLP(graph);
-				System.out.println("Path from "+workload.getOrigins().get(i)+"to "+(workload.getDestinations().get(i))+" is:");
+				//System.out.println("Path from "+workload.getOrigins().get(i)+"to "+(workload.getDestinations().get(i))+" is:");
 				Node from = graph.getNode(workload.getOrigins().get(i));
 				Node to = graph.getNode(workload.getDestinations().get(i));
 				ArrayList<Node> shortestPath = llp.shortestPath(from,to);
@@ -167,14 +167,14 @@ public class RoutingPerformance {
 				double currentStart = workload.getEstablishTimes().get(i); //Start of the current virtual circuit we are working with.
 				
 				for (int j = 0 ; j < numPackets ; j++) {
-					System.out.println("------------------------------");
+					//System.out.println("------------------------------");
 
-					System.out.println("currentStart is "+currentStart+", ttl is "+ttl+", packetRate is "+packetRate);
+					//System.out.println("currentStart is "+currentStart+", ttl is "+ttl+", packetRate is "+packetRate);
 					
 					// Run Shortest Hop Algorithm
 					refreshGraph();
 					SHP shp = new SHP(graph);
-					System.out.println("Path from "+workload.getOrigins().get(i)+" to "+(workload.getDestinations().get(i))+" is:");
+					//System.out.println("Path from "+workload.getOrigins().get(i)+" to "+(workload.getDestinations().get(i))+" is:");
 					Node from = graph.getNode(workload.getOrigins().get(i));
 					Node to = graph.getNode(workload.getDestinations().get(i));
 					ArrayList<Node> shortestPath = shp.shortestPath(from,to);
@@ -208,14 +208,14 @@ public class RoutingPerformance {
 				double currentStart = workload.getEstablishTimes().get(i);
 				
 				for (int j = 0 ; j < numPackets ; j++) {
-					System.out.println("------------------------------");
-					System.out.println("currentStart is "+currentStart+", ttl is "+ttl+", packetRate is "+packetRate);
+					//System.out.println("------------------------------");
+					//System.out.println("currentStart is "+currentStart+", ttl is "+ttl+", packetRate is "+packetRate);
 					
 					// Run Shortest Hop Algorithm
 					refreshGraph(); //Prevents prev search interfering with current search.
 
 					SDP sdp = new SDP(graph);
-					System.out.println("Path from "+workload.getOrigins().get(i)+" to "+(workload.getDestinations().get(i))+" is:");
+					//System.out.println("Path from "+workload.getOrigins().get(i)+" to "+(workload.getDestinations().get(i))+" is:");
 					Node from = graph.getNode(workload.getOrigins().get(i));
 					Node to = graph.getNode(workload.getDestinations().get(i));
 					ArrayList<Node> shortestPath = sdp.shortestPath(from,to);
@@ -248,15 +248,15 @@ public class RoutingPerformance {
 				double currentStart = workload.getEstablishTimes().get(i);
 				
 				for (int j = 0 ; j < numPackets ; j++) {
-					System.out.println("------------------------------");
-					System.out.println("currentStart is "+currentStart+", ttl is "+ttl+", packetRate is "+packetRate);
+					//System.out.println("------------------------------");
+					//System.out.println("currentStart is "+currentStart+", ttl is "+ttl+", packetRate is "+packetRate);
 					
 					
 					// Run Shortest Hop Algorithm
 					refreshGraph(); //Prevents prev search interfering with current search.
 
 					LLP llp = new LLP(graph);
-					System.out.println("Path from "+workload.getOrigins().get(i)+" to "+(workload.getDestinations().get(i))+" is:");
+					//System.out.println("Path from "+workload.getOrigins().get(i)+" to "+(workload.getDestinations().get(i))+" is:");
 					Node from = graph.getNode(workload.getOrigins().get(i));
 					Node to = graph.getNode(workload.getDestinations().get(i));
 					ArrayList<Node> shortestPath = llp.shortestPath(from,to);
@@ -301,9 +301,9 @@ public class RoutingPerformance {
 				// If entire circuit has been established, we consider the packets allocated.
 				if (shortestPathEdges.indexOf(e) == shortestPathEdges.size()-1) {
 					routedPackets += numPackets;
-					System.out.println("Total packets Routed: "+routedPackets);
+					//System.out.println("Total packets Routed: "+routedPackets);
 					successfulVCs++;
-					System.out.println("Num total successfulVCs: "+successfulVCs);
+					//System.out.println("Num total successfulVCs: "+successfulVCs);
 					
 					// Because we call manageCircuits for each directional edge, we increment totalHops and propdelay a redundant
 					// second time for each bidirectional link. This removes it.
@@ -315,7 +315,7 @@ public class RoutingPerformance {
 			} else {
 				circuit.setBlocked();
 				blockedPackets += numPackets;
-				System.out.println("Total packets Blocked: "+blockedPackets);
+				//System.out.println("Total packets Blocked: "+blockedPackets);
 				break;
 			}
 		}
@@ -398,7 +398,7 @@ public class RoutingPerformance {
 				}
 			}
 		}
-		System.out.println("size of shortestPathEdges: "+shortestPathEdges.size());
+		//System.out.println("size of shortestPathEdges: "+shortestPathEdges.size());
 		return shortestPathEdges;
 	}
 	

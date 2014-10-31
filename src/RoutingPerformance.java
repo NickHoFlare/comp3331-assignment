@@ -416,7 +416,6 @@ public class RoutingPerformance {
 	}
 	
 	public static void printStats() {
-		System.out.println("===== STATISTICS =====");
 		System.out.println("total number of virtual circuit requests: "+vcRequests+"\n");
 		System.out.println("total number of packets: "+totalPackets+"\n");
 		System.out.println("number of successfully routed packets: "+routedPackets+"\n");
@@ -486,10 +485,10 @@ public class RoutingPerformance {
 			// If the boolean isCircuit is false, PACKET was chosen as network scheme.
 			if (args[0].equalsIgnoreCase("CIRCUIT")) {
 				isCircuit = true;
-				System.out.println("Network Scheme: circuit");
+				//System.out.println("Network Scheme: circuit");
 			} else if (args[0].equalsIgnoreCase("PACKET")) {
 				isCircuit = false;
-				System.out.println("Network Scheme: packet");
+				//System.out.println("Network Scheme: packet");
 			} else {
 				System.err.println("First argument must be either 'CIRCUIT' or 'PACKET'");
 				System.exit(1);
@@ -500,13 +499,13 @@ public class RoutingPerformance {
 			// If routingScheme = 2, Least Loaded Path (LLP) was chosen as routing scheme.
 			if (args[1].equalsIgnoreCase("SHP")) {
 				routingScheme = 0;
-				System.out.println("Routing Scheme: SHP");
+				//System.out.println("Routing Scheme: SHP");
 			} else if (args[1].equalsIgnoreCase("SDP")) {
 				routingScheme = 1;
-				System.out.println("Routing Scheme: SDP");
+				//System.out.println("Routing Scheme: SDP");
 			} else if (args[1].equalsIgnoreCase("LLP")) {
 				routingScheme = 2;
-				System.out.println("Routing Scheme: LLP");
+				//System.out.println("Routing Scheme: LLP");
 			} else {
 				System.err.println("Second argument must be either 'SHP', 'SDP' or 'LLP'");
 				System.exit(1);
@@ -525,7 +524,7 @@ public class RoutingPerformance {
 		            	topology.getNumSimulCircuits().add(reader.nextInt());
 		            }
 		            reader.close();
-		            System.out.println("Topology file: "+args[2]);
+		            //System.out.println("Topology file: "+args[2]);
 	            } catch (Exception e){
 	            	System.err.println("Error: " + e.getMessage());
 	            }
@@ -547,7 +546,7 @@ public class RoutingPerformance {
 		            	workload.getActiveDurationList().add(reader.nextDouble());
 		            }
 		            reader.close();
-		            System.out.println("Workload file: "+args[3]);
+		            //System.out.println("Workload file: "+args[3]);
 	            } catch (Exception e){
 	            	System.err.println("Error: " + e.getMessage());
 	            }
@@ -560,7 +559,7 @@ public class RoutingPerformance {
 			int tempPacketRate = Integer.parseInt(args[4]);
 			if (tempPacketRate > 0) {
 				packetRate = tempPacketRate;
-				System.out.println("Packet Rate: "+packetRate+"Packets / Second");
+				//System.out.println("Packet Rate: "+packetRate+"Packets / Second");
 			} else {
 				System.err.println("Expecting a positive integer as fifth argument (PACKET_RATE).");
 				System.exit(1);
